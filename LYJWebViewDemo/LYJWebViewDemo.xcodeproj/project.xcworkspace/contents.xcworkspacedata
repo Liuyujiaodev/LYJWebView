@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:../../LYJWebView"
+      name = "LYJWebView">
+      <FileRef
+         location = "group:MGFaceIDLiveCustomDetect.bundle">
+      </FileRef>
+      <FileRef
+         location = "group:YWAuthUtil.h">
+      </FileRef>
+      <FileRef
+         location = "group:LYJOwnWebController.m">
+      </FileRef>
+      <FileRef
+         location = "group:DemoMGFaceIDNetwork.h">
+      </FileRef>
+      <Group
+         location = "group:framework"
+         name = "framework">
+         <Group
+            location = "group:MGFaceIDBaseKit.framework"
+            name = "MGFaceIDBaseKit.framework">
+            <Group
+               location = "group:Headers"
+               name = "Headers">
+               <FileRef
+                  location = "group:MGFaceIDLicenseManager.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGAliyunOSSKit.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGALog.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGCameraManager.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGALogClient.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGCameraConfig.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MG_LicenseManager.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGCameraImage.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGCameraDelegate.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGCameraKit.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGCameraDeviceSupport.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGALogGroup.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MG_Common.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGFaceIDBaseKit.h">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:Modules"
+               name = "Modules">
+               <FileRef
+                  location = "group:module.modulemap">
+               </FileRef>
+            </Group>
+            <FileRef
+               location = "group:Info.plist">
+            </FileRef>
+            <FileRef
+               location = "group:MGFaceIDBaseKit">
+            </FileRef>
+         </Group>
+         <Group
+            location = "group:MGFaceIDLiveDetect.framework"
+            name = "MGFaceIDLiveDetect.framework">
+            <FileRef
+               location = "group:MGFaceIDLiveDetect">
+            </FileRef>
+            <Group
+               location = "group:Headers"
+               name = "Headers">
+               <FileRef
+                  location = "group:MGFaceIDLiveDetect.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGFaceIDLiveDetectCustomConfigItem.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGFaceIDLiveDetectLanguageConfig.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGFaceIDLiveDetectManager.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGFaceIDLiveDetectError.h">
+               </FileRef>
+               <FileRef
+                  location = "group:MGFaceIDLiveDetectConfig.h">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:Modules"
+               name = "Modules">
+               <FileRef
+                  location = "group:module.modulemap">
+               </FileRef>
+            </Group>
+            <FileRef
+               location = "group:Info.plist">
+            </FileRef>
+         </Group>
+         <FileRef
+            location = "group:libshujumoheSDK.a">
+         </FileRef>
+      </Group>
+      <FileRef
+         location = "group:shujumohePB.h">
+      </FileRef>
+      <FileRef
+         location = "group:YWAuthUtil.m">
+      </FileRef>
+      <FileRef
+         location = "group:DemoMGFaceIDNetwork.mm">
+      </FileRef>
+      <FileRef
+         location = "group:LYJOwnWebController.h">
+      </FileRef>
+      <FileRef
+         location = "group:sjmhPBBundle.bundle">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "self:LYJWebViewDemo.xcodeproj">
+   </FileRef>
+</Workspace>

@@ -1,0 +1,12 @@
+platform:ios, ‘9.0’
+inhibit_all_warnings!
+
+target :LYJWebViewDemo do
+    pod 'AFNetworking', '~> 3.0'
+    pod 'BMKLocationKit', '~> 1.3.0.2'
+    pod 'UtilStr', '~>1.0.2'
+    pod 'YJCategory', '~>1.2.2'
+    pod 'SVGKit', :git => 'https://github.com/SVGKit/SVGKit.git', :branch => '2.0.0'
+    pod 'UMengAnalytics-NO-IDFA'
+
+end
