@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		092C9430222946540054DCC5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C942F222946540054DCC5 /* AppDelegate.m */; };
+		092C9430222946540054DCC5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 092C942F222946540054DCC5 /* AppDelegate.mm */; };
 		092C9433222946550054DCC5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C9432222946550054DCC5 /* ViewController.m */; };
 		092C9436222946550054DCC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 092C9434222946550054DCC5 /* Main.storyboard */; };
 		092C9438222946560054DCC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 092C9437222946560054DCC5 /* Assets.xcassets */; };
@@ -19,7 +19,7 @@
 		092C9455222CBF470054DCC5 /* MGFaceIDLiveDetect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C944B222CBF470054DCC5 /* MGFaceIDLiveDetect.framework */; };
 		092C9456222CBF470054DCC5 /* libshujumoheSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C944C222CBF470054DCC5 /* libshujumoheSDK.a */; };
 		092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C944E222CBF470054DCC5 /* YWAuthUtil.m */; };
-		092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm in Sources */ = {isa = PBXBuildFile; fileRef = 092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm */; };
+		092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */; };
 		092C9459222CBF470054DCC5 /* sjmhPBBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */; };
 		686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */; };
 /* End PBXBuildFile section */
@@ -27,7 +27,7 @@
 /* Begin PBXFileReference section */
 		092C942B222946540054DCC5 /* LYJWebViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LYJWebViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		092C942E222946540054DCC5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		092C942F222946540054DCC5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		092C942F222946540054DCC5 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		092C9431222946550054DCC5 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		092C9432222946550054DCC5 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		092C9435222946550054DCC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 		092C944C222CBF470054DCC5 /* libshujumoheSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libshujumoheSDK.a; sourceTree = "<group>"; };
 		092C944D222CBF470054DCC5 /* shujumohePB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shujumohePB.h; sourceTree = "<group>"; };
 		092C944E222CBF470054DCC5 /* YWAuthUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YWAuthUtil.m; sourceTree = "<group>"; };
-		092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoMGFaceIDNetwork.mm; sourceTree = "<group>"; };
+		092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoMGFaceIDNetwork.m; sourceTree = "<group>"; };
 		092C9450222CBF470054DCC5 /* LYJOwnWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LYJOwnWebController.h; sourceTree = "<group>"; };
 		092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = sjmhPBBundle.bundle; sourceTree = "<group>"; };
 		2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LYJWebViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,7 +90,7 @@
 			children = (
 				092C9444222CBF470054DCC5 /* LYJWebView */,
 				092C942E222946540054DCC5 /* AppDelegate.h */,
-				092C942F222946540054DCC5 /* AppDelegate.m */,
+				092C942F222946540054DCC5 /* AppDelegate.mm */,
 				092C9431222946550054DCC5 /* ViewController.h */,
 				092C9432222946550054DCC5 /* ViewController.m */,
 				092C9434222946550054DCC5 /* Main.storyboard */,
@@ -112,7 +112,7 @@
 				092C9449222CBF470054DCC5 /* framework */,
 				092C944D222CBF470054DCC5 /* shujumohePB.h */,
 				092C944E222CBF470054DCC5 /* YWAuthUtil.m */,
-				092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm */,
+				092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */,
 				092C9450222CBF470054DCC5 /* LYJOwnWebController.h */,
 				092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */,
 			);
@@ -288,9 +288,9 @@
 				092C9433222946550054DCC5 /* ViewController.m in Sources */,
 				092C9453222CBF470054DCC5 /* LYJOwnWebController.m in Sources */,
 				092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */,
-				092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm in Sources */,
+				092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.m in Sources */,
 				092C943E222946560054DCC5 /* main.m in Sources */,
-				092C9430222946540054DCC5 /* AppDelegate.m in Sources */,
+				092C9430222946540054DCC5 /* AppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

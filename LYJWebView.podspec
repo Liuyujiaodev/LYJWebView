@@ -17,7 +17,7 @@ s.author   = "liuyujiao"
 #s.social_media_url = "https://www.jianshu.com/u/16227d25bcf4"
 s.source       = { :git => "https://github.com/Liuyujiaodev/LYJWebView.git", :tag => "#{s.version}" }
  s.description = %{LYJWebView }
-s.source_files = "LYJWebView/**/*.{h,m}"
+s.source_files = "LYJWebView/**/*.{h,m}","LYJWebView/**/*.mm"
 s.vendored_frameworks = "LYJWebView/**/framework/*.framework"
 s.vendored_libraries = "LYJWebView/**/framework/libshujumoheSDK.a"
 s.frameworks = "WebKit","CoreMedia","CoreMotion","Social"
