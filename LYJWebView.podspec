@@ -15,11 +15,11 @@ s.summary  = "private web view"
 s.homepage = "https://github.com/Liuyujiaodev/LYJWebView.git"
 s.author   = "liuyujiao"
 #s.social_media_url = "https://www.jianshu.com/u/16227d25bcf4"
-s.source       = { :git => "https://github.com/Liuyujiaodev/LYJWebController.git", :tag => "#{s.version}" }
+s.source       = { :git => "https://github.com/Liuyujiaodev/LYJWebView.git", :tag => "#{s.version}" }
  s.description = %{LYJWebView }
-s.vendored_frameworks = "LYJWebView/framework/*.framework"
-s.vendored_libraries = 'LYJWebView/libshujumoheSDK.a'
-s.source_files = "LYJWebView","LYJWebView/**/*.{h,m}","LYJWebView/**/*.mm"
+s.source_files = "LYJWebView/**/*.{h,m}"
+s.vendored_frameworks = "LYJWebView/**/framework/*.framework"
+s.vendored_libraries = "LYJWebView/**/framework/libshujumoheSDK.a"
 s.frameworks = "WebKit","CoreMedia","CoreMotion","Social"
 s.requires_arc = true
 s.platform = :ios, '9.0'

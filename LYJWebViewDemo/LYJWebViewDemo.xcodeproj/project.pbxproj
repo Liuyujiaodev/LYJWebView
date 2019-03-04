@@ -13,6 +13,14 @@
 		092C9438222946560054DCC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 092C9437222946560054DCC5 /* Assets.xcassets */; };
 		092C943B222946560054DCC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 092C9439222946560054DCC5 /* LaunchScreen.storyboard */; };
 		092C943E222946560054DCC5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C943D222946560054DCC5 /* main.m */; };
+		092C9452222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 092C9445222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle */; };
+		092C9453222CBF470054DCC5 /* LYJOwnWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C9447222CBF470054DCC5 /* LYJOwnWebController.m */; };
+		092C9454222CBF470054DCC5 /* MGFaceIDBaseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C944A222CBF470054DCC5 /* MGFaceIDBaseKit.framework */; };
+		092C9455222CBF470054DCC5 /* MGFaceIDLiveDetect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C944B222CBF470054DCC5 /* MGFaceIDLiveDetect.framework */; };
+		092C9456222CBF470054DCC5 /* libshujumoheSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C944C222CBF470054DCC5 /* libshujumoheSDK.a */; };
+		092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C944E222CBF470054DCC5 /* YWAuthUtil.m */; };
+		092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm in Sources */ = {isa = PBXBuildFile; fileRef = 092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm */; };
+		092C9459222CBF470054DCC5 /* sjmhPBBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */; };
 		686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +35,18 @@
 		092C943A222946560054DCC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		092C943C222946560054DCC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		092C943D222946560054DCC5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		092C9445222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MGFaceIDLiveCustomDetect.bundle; sourceTree = "<group>"; };
+		092C9446222CBF470054DCC5 /* YWAuthUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YWAuthUtil.h; sourceTree = "<group>"; };
+		092C9447222CBF470054DCC5 /* LYJOwnWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LYJOwnWebController.m; sourceTree = "<group>"; };
+		092C9448222CBF470054DCC5 /* DemoMGFaceIDNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoMGFaceIDNetwork.h; sourceTree = "<group>"; };
+		092C944A222CBF470054DCC5 /* MGFaceIDBaseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MGFaceIDBaseKit.framework; sourceTree = "<group>"; };
+		092C944B222CBF470054DCC5 /* MGFaceIDLiveDetect.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MGFaceIDLiveDetect.framework; sourceTree = "<group>"; };
+		092C944C222CBF470054DCC5 /* libshujumoheSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libshujumoheSDK.a; sourceTree = "<group>"; };
+		092C944D222CBF470054DCC5 /* shujumohePB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shujumohePB.h; sourceTree = "<group>"; };
+		092C944E222CBF470054DCC5 /* YWAuthUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YWAuthUtil.m; sourceTree = "<group>"; };
+		092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoMGFaceIDNetwork.mm; sourceTree = "<group>"; };
+		092C9450222CBF470054DCC5 /* LYJOwnWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LYJOwnWebController.h; sourceTree = "<group>"; };
+		092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = sjmhPBBundle.bundle; sourceTree = "<group>"; };
 		2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LYJWebViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32A44810EBD9AA21F6FC4F77 /* Pods-LYJWebViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		99879AEEC65E8F8BE23E66EF /* Pods-LYJWebViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -37,6 +57,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				092C9454222CBF470054DCC5 /* MGFaceIDBaseKit.framework in Frameworks */,
+				092C9456222CBF470054DCC5 /* libshujumoheSDK.a in Frameworks */,
+				092C9455222CBF470054DCC5 /* MGFaceIDLiveDetect.framework in Frameworks */,
 				686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,6 +88,7 @@
 		092C942D222946540054DCC5 /* LYJWebViewDemo */ = {
 			isa = PBXGroup;
 			children = (
+				092C9444222CBF470054DCC5 /* LYJWebView */,
 				092C942E222946540054DCC5 /* AppDelegate.h */,
 				092C942F222946540054DCC5 /* AppDelegate.m */,
 				092C9431222946550054DCC5 /* ViewController.h */,
@@ -76,6 +100,34 @@
 				092C943D222946560054DCC5 /* main.m */,
 			);
 			path = LYJWebViewDemo;
+			sourceTree = "<group>";
+		};
+		092C9444222CBF470054DCC5 /* LYJWebView */ = {
+			isa = PBXGroup;
+			children = (
+				092C9445222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle */,
+				092C9446222CBF470054DCC5 /* YWAuthUtil.h */,
+				092C9447222CBF470054DCC5 /* LYJOwnWebController.m */,
+				092C9448222CBF470054DCC5 /* DemoMGFaceIDNetwork.h */,
+				092C9449222CBF470054DCC5 /* framework */,
+				092C944D222CBF470054DCC5 /* shujumohePB.h */,
+				092C944E222CBF470054DCC5 /* YWAuthUtil.m */,
+				092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm */,
+				092C9450222CBF470054DCC5 /* LYJOwnWebController.h */,
+				092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */,
+			);
+			name = LYJWebView;
+			path = ../../LYJWebView;
+			sourceTree = "<group>";
+		};
+		092C9449222CBF470054DCC5 /* framework */ = {
+			isa = PBXGroup;
+			children = (
+				092C944A222CBF470054DCC5 /* MGFaceIDBaseKit.framework */,
+				092C944B222CBF470054DCC5 /* MGFaceIDLiveDetect.framework */,
+				092C944C222CBF470054DCC5 /* libshujumoheSDK.a */,
+			);
+			path = framework;
 			sourceTree = "<group>";
 		};
 		CEE387B9E86A333039C4D8E8 /* Pods */ = {
@@ -157,7 +209,9 @@
 			files = (
 				092C943B222946560054DCC5 /* LaunchScreen.storyboard in Resources */,
 				092C9438222946560054DCC5 /* Assets.xcassets in Resources */,
+				092C9459222CBF470054DCC5 /* sjmhPBBundle.bundle in Resources */,
 				092C9436222946550054DCC5 /* Main.storyboard in Resources */,
+				092C9452222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +286,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				092C9433222946550054DCC5 /* ViewController.m in Sources */,
+				092C9453222CBF470054DCC5 /* LYJOwnWebController.m in Sources */,
+				092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */,
+				092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.mm in Sources */,
 				092C943E222946560054DCC5 /* main.m in Sources */,
 				092C9430222946540054DCC5 /* AppDelegate.m in Sources */,
 			);
@@ -378,10 +435,44 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9S457WHY2G;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/BMKLocationKit/framework\"",
+					"\"${PODS_ROOT}/UMengAnalytics-NO-IDFA/umsdk_IOS_analyics_no-idfa_v4.2.5\"",
+					"\"$(SRCROOT)/../LYJWebView/framework\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/include/libxml2",
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"\"${PODS_ROOT}/Headers/Public/BMKLocationKit\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaLumberjack\"",
+					"\"${PODS_ROOT}/Headers/Public/Reachability\"",
+					"\"${PODS_ROOT}/Headers/Public/SVGKit\"",
+					"\"${PODS_ROOT}/Headers/Public/UMengAnalytics-NO-IDFA\"",
+					"\"${PODS_ROOT}/Headers/Public/UtilStr\"",
+					"\"${PODS_ROOT}/Headers/Public/YJBase64\"",
+					"\"${PODS_ROOT}/Headers/Public/YJCategory\"",
+					"\"${PODS_ROOT}/Headers/Public/YJUtil\"",
+					"\"$(SRCROOT)/../LYJWebView\"",
+				);
 				INFOPLIST_FILE = LYJWebViewDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(PODS_ROOT)/UMengAnalytics-NO-IDFA/**\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/CocoaLumberjack\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Reachability\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SVGKit\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/YJBase64\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/YJCategory\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/YJUtil\"",
+					"\"$(SRCROOT)/../LYJWebView/framework\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jiao.LYJWebViewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -396,10 +487,44 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9S457WHY2G;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/BMKLocationKit/framework\"",
+					"\"${PODS_ROOT}/UMengAnalytics-NO-IDFA/umsdk_IOS_analyics_no-idfa_v4.2.5\"",
+					"\"$(SRCROOT)/../LYJWebView/framework\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/include/libxml2",
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"\"${PODS_ROOT}/Headers/Public/BMKLocationKit\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaLumberjack\"",
+					"\"${PODS_ROOT}/Headers/Public/Reachability\"",
+					"\"${PODS_ROOT}/Headers/Public/SVGKit\"",
+					"\"${PODS_ROOT}/Headers/Public/UMengAnalytics-NO-IDFA\"",
+					"\"${PODS_ROOT}/Headers/Public/UtilStr\"",
+					"\"${PODS_ROOT}/Headers/Public/YJBase64\"",
+					"\"${PODS_ROOT}/Headers/Public/YJCategory\"",
+					"\"${PODS_ROOT}/Headers/Public/YJUtil\"",
+					"\"$(SRCROOT)/../LYJWebView\"",
+				);
 				INFOPLIST_FILE = LYJWebViewDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(PODS_ROOT)/UMengAnalytics-NO-IDFA/**\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/CocoaLumberjack\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Reachability\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SVGKit\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/YJBase64\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/YJCategory\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/YJUtil\"",
+					"\"$(SRCROOT)/../LYJWebView/framework\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jiao.LYJWebViewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
