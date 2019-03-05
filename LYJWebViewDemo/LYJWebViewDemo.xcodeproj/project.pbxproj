@@ -21,6 +21,16 @@
 		092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C944E222CBF470054DCC5 /* YWAuthUtil.m */; };
 		092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */; };
 		092C9459222CBF470054DCC5 /* sjmhPBBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */; };
+		092C945C222E5C8B0054DCC5 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C945B222E5C8B0054DCC5 /* CommonUtil.m */; };
+		092C9461222E710D0054DCC5 /* back.svg in Resources */ = {isa = PBXBuildFile; fileRef = 092C945D222E710C0054DCC5 /* back.svg */; };
+		092C9462222E710D0054DCC5 /* close.svg in Resources */ = {isa = PBXBuildFile; fileRef = 092C945E222E710C0054DCC5 /* close.svg */; };
+		092C9463222E710D0054DCC5 /* share.svg in Resources */ = {isa = PBXBuildFile; fileRef = 092C945F222E710D0054DCC5 /* share.svg */; };
+		092C9464222E710D0054DCC5 /* scan.html in Resources */ = {isa = PBXBuildFile; fileRef = 092C9460222E710D0054DCC5 /* scan.html */; };
+		092C9466222E75440054DCC5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C9465222E75440054DCC5 /* SystemConfiguration.framework */; };
+		092C9469222E75560054DCC5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C9467222E75560054DCC5 /* CoreMedia.framework */; };
+		092C946A222E75560054DCC5 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C9468222E75560054DCC5 /* CoreMotion.framework */; };
+		092C946C222E75630054DCC5 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C946B222E75630054DCC5 /* WebKit.framework */; };
+		092C946E222E75700054DCC5 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C946D222E75700054DCC5 /* Social.framework */; };
 		686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +57,17 @@
 		092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoMGFaceIDNetwork.m; sourceTree = "<group>"; };
 		092C9450222CBF470054DCC5 /* LYJOwnWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LYJOwnWebController.h; sourceTree = "<group>"; };
 		092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = sjmhPBBundle.bundle; sourceTree = "<group>"; };
+		092C945A222E5C8B0054DCC5 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
+		092C945B222E5C8B0054DCC5 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
+		092C945D222E710C0054DCC5 /* back.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = back.svg; sourceTree = "<group>"; };
+		092C945E222E710C0054DCC5 /* close.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = close.svg; sourceTree = "<group>"; };
+		092C945F222E710D0054DCC5 /* share.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = share.svg; sourceTree = "<group>"; };
+		092C9460222E710D0054DCC5 /* scan.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = scan.html; sourceTree = "<group>"; };
+		092C9465222E75440054DCC5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		092C9467222E75560054DCC5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		092C9468222E75560054DCC5 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		092C946B222E75630054DCC5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		092C946D222E75700054DCC5 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LYJWebViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32A44810EBD9AA21F6FC4F77 /* Pods-LYJWebViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		99879AEEC65E8F8BE23E66EF /* Pods-LYJWebViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -57,6 +78,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				092C946E222E75700054DCC5 /* Social.framework in Frameworks */,
+				092C946C222E75630054DCC5 /* WebKit.framework in Frameworks */,
+				092C9469222E75560054DCC5 /* CoreMedia.framework in Frameworks */,
+				092C946A222E75560054DCC5 /* CoreMotion.framework in Frameworks */,
+				092C9466222E75440054DCC5 /* SystemConfiguration.framework in Frameworks */,
 				092C9454222CBF470054DCC5 /* MGFaceIDBaseKit.framework in Frameworks */,
 				092C9456222CBF470054DCC5 /* libshujumoheSDK.a in Frameworks */,
 				092C9455222CBF470054DCC5 /* MGFaceIDLiveDetect.framework in Frameworks */,
@@ -88,6 +114,10 @@
 		092C942D222946540054DCC5 /* LYJWebViewDemo */ = {
 			isa = PBXGroup;
 			children = (
+				092C945D222E710C0054DCC5 /* back.svg */,
+				092C945E222E710C0054DCC5 /* close.svg */,
+				092C9460222E710D0054DCC5 /* scan.html */,
+				092C945F222E710D0054DCC5 /* share.svg */,
 				092C9444222CBF470054DCC5 /* LYJWebView */,
 				092C942E222946540054DCC5 /* AppDelegate.h */,
 				092C942F222946540054DCC5 /* AppDelegate.mm */,
@@ -105,15 +135,17 @@
 		092C9444222CBF470054DCC5 /* LYJWebView */ = {
 			isa = PBXGroup;
 			children = (
+				092C945A222E5C8B0054DCC5 /* CommonUtil.h */,
+				092C945B222E5C8B0054DCC5 /* CommonUtil.m */,
 				092C9445222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle */,
 				092C9446222CBF470054DCC5 /* YWAuthUtil.h */,
+				092C9450222CBF470054DCC5 /* LYJOwnWebController.h */,
 				092C9447222CBF470054DCC5 /* LYJOwnWebController.m */,
 				092C9448222CBF470054DCC5 /* DemoMGFaceIDNetwork.h */,
 				092C9449222CBF470054DCC5 /* framework */,
 				092C944D222CBF470054DCC5 /* shujumohePB.h */,
 				092C944E222CBF470054DCC5 /* YWAuthUtil.m */,
 				092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */,
-				092C9450222CBF470054DCC5 /* LYJOwnWebController.h */,
 				092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */,
 			);
 			name = LYJWebView;
@@ -142,6 +174,11 @@
 		D81837FA4C48F0F7FD2214DE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				092C946D222E75700054DCC5 /* Social.framework */,
+				092C946B222E75630054DCC5 /* WebKit.framework */,
+				092C9467222E75560054DCC5 /* CoreMedia.framework */,
+				092C9468222E75560054DCC5 /* CoreMotion.framework */,
+				092C9465222E75440054DCC5 /* SystemConfiguration.framework */,
 				2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */,
 			);
 			name = Frameworks;
@@ -208,7 +245,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				092C943B222946560054DCC5 /* LaunchScreen.storyboard in Resources */,
+				092C9464222E710D0054DCC5 /* scan.html in Resources */,
+				092C9461222E710D0054DCC5 /* back.svg in Resources */,
+				092C9463222E710D0054DCC5 /* share.svg in Resources */,
 				092C9438222946560054DCC5 /* Assets.xcassets in Resources */,
+				092C9462222E710D0054DCC5 /* close.svg in Resources */,
 				092C9459222CBF470054DCC5 /* sjmhPBBundle.bundle in Resources */,
 				092C9436222946550054DCC5 /* Main.storyboard in Resources */,
 				092C9452222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle in Resources */,
@@ -287,6 +328,7 @@
 			files = (
 				092C9433222946550054DCC5 /* ViewController.m in Sources */,
 				092C9453222CBF470054DCC5 /* LYJOwnWebController.m in Sources */,
+				092C945C222E5C8B0054DCC5 /* CommonUtil.m in Sources */,
 				092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */,
 				092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.m in Sources */,
 				092C943E222946560054DCC5 /* main.m in Sources */,

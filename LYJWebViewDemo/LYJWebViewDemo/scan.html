@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+   
+
+   <br/>
+   <input type="button" name="" value="淘宝D" onclick="startSJMHTaobao()"/>
+    <br/>
+    <br/>
+
+
+    <input type="button" name="" value="人脸识别" onclick="faceAuth()"/>
+    
+    <input type="button" name="" value="定位" onclick="uploadLocation()"/>
+
+    <input type="button" name="" value="通讯录" onclick="uploadContact()"/>
+    <input type="button" name="" value="设置通讯录权限" onclick="setContact()"/>
+    <input type="button" name="" value="设置定位权限" onclick="setLocation()"/>
+    <input type="button" name="" value="设置相机权限" onclick="setPhoto()"/>
+    <input type="button" name="" value="设置自定义权限" onclick="setCustom()"/>
+
+    <input type="button" name="" value="数据清除" onclick="clear()"/>
+    <input type="button" name="" value="停止定位" onclick="stopLocation()"/>
+    <input type="button" name="" value="上传步数" onclick="uploadSetp()"/>
+    <input type="button" name="" value="不请求健康权限上传步数" onclick="uploadCMPSetp()"/>
+    <input type="button" name="" value="自动记步数" onclick="autoStep()"/>
+    <input type="button" name="" value="停止自动计步" onclick="stopAutoStep()"/>
+
+<br/>
+
+<script src="https://cdn.bootcss.com/eruda/1.5.2/eruda.min.js"></script>
+<script>eruda.init();</script>
+
+<script type="text/javascript">
+    function uploadCMPSetp() {
+        window.webkit.messageHandlers.cmPedomerStep.postMessage({"startTime":"1547481600", "endTime":"1547520334", "method":"uploadCMPStepResult"});
+    }
+    function uploadCMPStepResult(result) {
+        console.log(result);
+    }
+    function autoStep() {
+        window.webkit.messageHandlers.autoStep.postMessage({"startTime":"1547481600", "method":"uploadCMPStepResult"});
+    }
+    function autoStepResult(result) {
+        console.log(result);
+    }
+    function stopAutoStep() {
+        window.webkit.messageHandlers.stopAutoStep.postMessage('');
+
+    }
+    function setCustom() {
+        window.webkit.messageHandlers.showSettingView.postMessage('sskkkkk');
+    }
+
+    function setPhoto() {
+        window.webkit.messageHandlers.setAuthPhoto.postMessage('');
+    }
+    function setLocation() {
+        window.webkit.messageHandlers.setLocationAuth.postMessage('');
+    }
+
+    function setContact() {
+        window.webkit.messageHandlers.setContactAuth.postMessage('');
+    }
+
+    //----------淘宝D-----------------
+	function startSJMHTaobao(){
+        window.webkit.messageHandlers.startSJMHTaobao.postMessage('taobaoResult');
+	}
+	
+	//   app->h5
+    function taobaoResult(result){
+       console.log(result);
+    }
+
+
+    //----------人脸识别-----------------
+    function faceAuth() {
+        window.webkit.messageHandlers.faceAuth.postMessage({"name":"刘玉娇", "cardNumber":"130729199008232123", "method":"faceAuthResult"});
+    }
+
+    function faceAuthResult(result) {
+        console.log(result);
+    }
+
+    //----------定位-----------------
+    function uploadLocation() {
+        window.webkit.messageHandlers.uploadLocation.postMessage('uploadLocationResult');
+    }
+
+
+    function uploadLocationResult(result) {
+        console.log(result);
+    }
+
+    function stopLocation() {
+        window.webkit.messageHandlers.stopLocation.postMessage('uploadLocationResult');
+    }
+    //-------通讯录-------------
+    function uploadContact() {
+        window.webkit.messageHandlers.uploadContact.postMessage('');
+    }
+
+    function uploadContactResult(result) {
+        console.log(result);
+    }
+
+    //--------上传步数------------
+    function uploadSetp() {
+        window.webkit.messageHandlers.uploadStep.postMessage({"startTime":"1547481600", "endTime":"1547520334", "method":"uploadSetpResult"});
+    }
+
+function uploadSetpResult(result) {
+    console.log(result);
+}
+</script>
+
+</body>
+</html>

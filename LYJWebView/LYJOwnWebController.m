@@ -25,6 +25,7 @@
 #import "SVGKImage.h"
 #import "Util.h"
 #import "UMMobClick/MobClick.h"
+#import "CommonUtil.h"
 
 @interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, BMKLocationManagerDelegate, WKScriptMessageHandler>
 @property (nonatomic, strong) WKWebView* webView;
@@ -36,7 +37,6 @@
 @property (nonatomic, strong) UIButton* shareBtn;
 @property (nonatomic, strong) UILabel* titleLabel;
 @property (nonatomic, strong) UIView* navView;
-
 
 @property (nonatomic, copy) NSString* currentUrl;
 @property (nonatomic, copy) NSString* lastUrl;
@@ -53,32 +53,16 @@
 
 @implementation LYJOwnWebController
 
--(NSMutableArray*)yw_urls {
-    if (!_yw_urls) {
-        _yw_urls = [NSMutableArray array];
-    }
-    return _yw_urls;
-}
-
-- (void)setUmeng_key:(NSString *)umeng_key {
-    _umeng_key = umeng_key;
-    [self umAnalysis:_umeng_key];
-}
-
-- (void)setColor:(NSString *)color {
-    _color = color;
-    self.navView.backgroundColor = [UIColor colorWithHexString:self.color];
-}
-
-
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self setDefaultParams];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noConnect) name:@"no-connect" object:nil];
-    
 }
+
+
+#pragma mark - 网络连接UI变化
 
 - (void)connect {
     NSString* title = self.titleLabel.text;
@@ -94,6 +78,15 @@
     self.titleLabel.textColor = RGBColor(102, 102, 102);
 }
 
+
+#pragma mark - NAV UI
+
+- (void)setBackImg:(UIImage*)backImg closeImg:(UIImage*)closeImg shareImg:(UIImage*)shareImg {
+    [self.backBtn setImage:backImg forState:UIControlStateNormal];
+    [self.closeBtn setImage:closeImg forState:UIControlStateNormal];
+    [self.shareBtn setImage:shareImg forState:UIControlStateNormal];
+}
+
 - (void)setNavTitle {
     self.view.userInteractionEnabled = YES;
     
@@ -103,10 +96,12 @@
     [self.view addSubview:self.navView];
     
     self.backBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, (APP_STATUS_NAVBAR_HEIGHT - 24)/2 + APP_STATUS_HEIGHT/2, 50, 24)];
-    [self.backBtn setImage:[SVGKImage imageNamed:@"back"].UIImage forState:UIControlStateNormal];
     [self.backBtn addTarget:self action:@selector(backBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    self.backBtn.hidden = YES;
-    self.backBtn.enabled = NO;
+    if (self.type != LYJWebViewTypeZDGJ) {
+        self.backBtn.hidden = YES;
+        self.backBtn.enabled = NO;
+    }
+
     [self.navView addSubview:self.backBtn];
     
     
@@ -121,7 +116,6 @@
     [self.titleLabel addGestureRecognizer:tap];
     
     self.closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.backBtn.right + 15, (APP_STATUS_NAVBAR_HEIGHT - 24)/2 + APP_STATUS_HEIGHT/2, 24, 24)];
-    [self.closeBtn setImage:[SVGKImage imageNamed:@"close"].UIImage forState:UIControlStateNormal];
     [self.closeBtn addTarget:self action:@selector(closeBtnAction) forControlEvents:UIControlEventTouchUpInside];
     self.closeBtn.hidden = YES;
     self.closeBtn.enabled = NO;
@@ -129,10 +123,14 @@
     
     
     self.shareBtn = [[UIButton alloc] initWithFrame:CGRectMake(APPWidth - 50 - 20, (APP_STATUS_NAVBAR_HEIGHT - 24)/2 + APP_STATUS_HEIGHT/2, 35, 24)];
-    [self.shareBtn setImage:[SVGKImage imageNamed:@"share"].UIImage forState:UIControlStateNormal];
     [self.shareBtn addTarget:self action:@selector(shareBtnAction) forControlEvents:UIControlEventTouchUpInside];
     [self.navView addSubview:self.shareBtn];
+    
+    //是否使用默认的Nav
 }
+
+
+#pragma mark - btn action
 
 - (void)titleLabelAction {
     int tapCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"titleCount"] intValue];
@@ -150,11 +148,18 @@
     if (self.webView.canGoBack) {
         [self.webView goBack];
     } else {
-        self.backBtn.hidden = YES;
-        self.backBtn.enabled = NO;
-        self.closeBtn.hidden = YES;
-        self.closeBtn.enabled = NO;
-        
+        if (self.type != LYJWebViewTypeZDGJ) {
+            self.backBtn.hidden = YES;
+            self.backBtn.enabled = NO;
+            self.closeBtn.hidden = YES;
+            self.closeBtn.enabled = NO;
+        } else {
+            if (self.toRootVC) {
+                [self.navigationController popToRootViewControllerAnimated:YES];
+            } else {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }
     }
 }
 
@@ -175,6 +180,8 @@
     [self presentViewController:avc animated:YES completion:nil];
     
 }
+
+#pragma mark - 注册方法
 
 - (void)setUrl:(NSString *)url {
     [self.imgView removeFromSuperview];
@@ -202,7 +209,8 @@
     [userController addScriptMessageHandler:self name:@"cmPedomerStep"];
     [userController addScriptMessageHandler:self name:@"autoStep"];
     [userController addScriptMessageHandler:self name:@"stopAutoStep"];
-    
+    [userController addScriptMessageHandler:self name:@"popController"];
+
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
     self.webView.navigationDelegate = self;
     self.webView.UIDelegate = self;
@@ -216,38 +224,22 @@
     [self.webView loadRequest:request];
 }
 
-
-#pragma mark - 监听加载进度
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    
-    if ([keyPath isEqualToString:@"canGoBack"]) {
-        if (self.webView.canGoBack) {
-            self.backBtn.hidden = NO;
-            self.backBtn.enabled = YES;
-            
-            self.closeBtn.hidden = NO;
-            self.closeBtn.enabled = YES;
-        } else {
-            self.backBtn.hidden = YES;
-            self.backBtn.enabled = NO;
-            
-            self.closeBtn.hidden = YES;
-            self.closeBtn.enabled = NO;
-        }
-    }
-}
-
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
     [self setDefaultParams];
 }
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
-    self.titleLabel.text =  webView.title;//获取当前页面的title
+    if (self.type != LYJWebViewTypeZDGJ) {
+        self.titleLabel.text =  webView.title;//获取当前页面的title
+    }
     NSString *currentURL = webView.URL.absoluteString;
     if (![currentURL isEqualToString:_url]) {
         _currentUrl = currentURL;
-        self.backBtn.hidden = NO;
-        self.backBtn.enabled = YES;
+        if (self.type != LYJWebViewTypeZDGJ) {
+            self.backBtn.hidden = NO;
+            self.backBtn.enabled = YES;
+        }
+
         
         self.closeBtn.hidden = NO;
         self.closeBtn.enabled = YES;
@@ -261,8 +253,6 @@
     } else {
         [_yw_urls addObject:currentURL];
     }
-    
-    
 }
 
 - (void)showLeftBackBtn {
@@ -308,14 +298,26 @@
         [self startAutoStep:message.body];
     } else if ([message.name isEqualToString:@"stopAutoStep"]) {
         [self stopAutoStep];
+    } else if ([message.name isEqualToString:@"popController"]) {
+        [self popController];
     }
 }
+
+- (void)popController {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - 停止计步
 
 - (void)stopAutoStep {
     if (_yw_pedometer) {
         [_yw_pedometer stopPedometerUpdates];
     }
 }
+
+
+#pragma mark - 开始计步
+
 - (void)startAutoStep:(NSDictionary*)dic {
     NSString* resultMethod = [dic stringWithKey:@"method"];
     double startTime = [dic stringWithKey:@"startTime"].doubleValue;
@@ -410,10 +412,11 @@
 }
 
 
+#pragma mark - 设置默认参数
 
 - (void)setDefaultParams {
-    NSString* str = [Util getJsonWith:[self addFixedArgumentsWithDictionary:[NSDictionary dictionary]]];
-    NSString* value = [NSString stringWithFormat:@"var appParams = %@", str];
+    NSString* str = [Util getJsonWith:[self addFixedArgumentsWithDictionary:[CommonUtil Commondata]]];
+    NSString* value = [NSString stringWithFormat:@"var appConfig = %@", str];
     
     NSString* alertJS = [NSString stringWithFormat:@"%@", value];
     
@@ -422,6 +425,7 @@
 }
 
 #pragma mark - clear cookie
+
 - (void)clearCookie {
     NSHTTPCookie *cookie;NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (cookie in [storage cookies]) {
@@ -492,6 +496,7 @@
 
 
 #pragma mark - 定位
+
 - (void)uploadLocation:(NSString*)resultMethod {
     if (!resultMethod || [resultMethod isEmptyStr]) {
         self.locationResultMethod = @"uploadLocationResult";
@@ -570,7 +575,9 @@
     }
 }
 
+
 #pragma mark - 防止定位弹窗一闪就消失
+
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     switch (status) {
@@ -589,7 +596,9 @@
     }
 }
 
+
 #pragma mark - face++人脸识别
+
 - (void)face:(NSString*)name Number:(NSString*)number Method:(nonnull NSString *)resultMethod {
     if (!resultMethod || [resultMethod isEmptyStr]) {
         resultMethod = @"faceAuthResult";
@@ -653,6 +662,7 @@
     
 }
 
+
 #pragma mark - 数据磨合接口
 
 - (void)startSJMHTaobao:(NSString*)resultMethod {
@@ -678,6 +688,7 @@
 }
 
 #pragma mark - 淘宝D
+
 - (void)thePBMissionWithCode:(NSString *)code withMessage:(NSString *)message {
     
     if (code.integerValue == 0) {
@@ -790,7 +801,9 @@
     }
 }
 
+
 #pragma mark - 默认参数
+
 - (NSDictionary *)addFixedArgumentsWithDictionary:(NSDictionary *)parameters
 {
     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:parameters];
@@ -879,6 +892,35 @@
     return dic;
 }
 
+
+#pragma mark - 监听canGoBack的变化
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    if ([keyPath isEqualToString:@"canGoBack"]) {
+        if (self.webView.canGoBack) {
+            if (self.type != LYJWebViewTypeZDGJ) {
+                self.backBtn.hidden = NO;
+                self.backBtn.enabled = YES;
+            }
+            
+            self.closeBtn.hidden = NO;
+            self.closeBtn.enabled = YES;
+        } else {
+            if (self.type != LYJWebViewTypeZDGJ) {
+                self.backBtn.hidden = YES;
+                self.backBtn.enabled = NO;
+            }
+            
+            self.closeBtn.hidden = YES;
+            self.closeBtn.enabled = NO;
+        }
+    }
+}
+
+
+#pragma mark - Umeng注册
+
 - (void)umAnalysis:(NSString*)key {
     UMConfigInstance.appKey = key;
     UMConfigInstance.channelId = @"App Store";
@@ -889,6 +931,56 @@
 }
 
 
+-(NSMutableArray*)yw_urls {
+    if (!_yw_urls) {
+        _yw_urls = [NSMutableArray array];
+    }
+    return _yw_urls;
+}
 
+#pragma mark - setter
 
+- (void)setUmeng_key:(NSString *)umeng_key {
+    _umeng_key = umeng_key;
+    [self umAnalysis:_umeng_key];
+}
+
+- (void)setColor:(NSString *)color {
+    _color = color;
+    self.navView.backgroundColor = [UIColor colorWithHexString:self.color];
+}
+
+- (void)setUserAgent:(NSString *)userAgent {
+    _userAgent = userAgent;
+    __weak typeof(self) weakSelf = self;
+    
+    [self.webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        NSString *userAgent = result;
+        NSString *newUserAgent = [userAgent stringByAppendingString:@" Appended Custom User Agent"];
+        
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:newUserAgent, @"UserAgent", nil];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+        
+        strongSelf.webView = [[WKWebView alloc] initWithFrame:strongSelf.view.bounds];
+        
+        // After this point the web view will use a custom appended user agent
+        [strongSelf.webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
+            NSLog(@"%@", result);
+        }];
+    }];
+}
+
+- (void)setUseCustomNav:(BOOL)useCustomNav {
+    _useCustomNav = useCustomNav;
+    if (!_useCustomNav) {
+        [self setBackImg:[SVGKImage imageNamed:@"back"].UIImage closeImg:[SVGKImage imageNamed:@"close"].UIImage shareImg:[SVGKImage imageNamed:@"share"].UIImage];
+    }
+}
+
+- (void)setTitleStr:(NSString *)titleStr {
+    _titleStr = titleStr;
+    self.titleLabel.text = titleStr;
+}
 @end

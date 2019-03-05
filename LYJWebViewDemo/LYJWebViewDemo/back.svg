@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>back</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="iPhone-XS" transform="translate(-20.000000, -54.000000)">
+            <g id="iPhone-X/Bars/Navigation/Navigation-Bar---1-Action">
+                <g id="Group" transform="translate(20.000000, 54.000000)">
+                    <rect id="Rectangle" fill-rule="nonzero" x="0" y="0" width="24" height="24"></rect>
+                    <g id="向左1" transform="translate(7.000000, 2.000000)" fill="#000000">
+                        <path d="M9.8232738,19.9999893 C9.52224665,19.9999893 9.22117736,19.8831878 8.99149824,19.6488106 L0.368669875,10.8496062 C-0.0907304989,10.3816261 -0.0907304989,9.62159923 0.368669875,9.15280203 L8.99149827,0.35278055 C9.45089864,-0.11601665 10.1948904,-0.11601665 10.6542908,0.35278055 C11.1136912,0.82076065 11.1136912,1.58078755 10.6542908,2.04958475 L2.86323797,10.0007741 L10.6542908,17.9511894 C11.1136911,18.4199866 11.1136911,19.1791964 10.6542908,19.6479936 C10.4253702,19.8831878 10.124301,19.9999893 9.8232738,19.9999893 Z" id="Path"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LYJOwnWebController.h"
 
 @interface AppDelegate ()
 
@@ -16,7 +17,14 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    LYJOwnWebController* webVC = [[LYJOwnWebController alloc] init];
+    webVC.url = [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
+    webVC.useCustomNav = NO;
+    UINavigationController* vc = [[UINavigationController alloc] initWithRootViewController:webVC];
+    self.window.rootViewController = vc;
+    
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
