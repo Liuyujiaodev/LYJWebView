@@ -94,17 +94,19 @@
         window.webkit.messageHandlers.uploadLocation.postMessage('uploadLocationResult');
     }
 
+    webJS = {
+        uploadLocationResult: function (result) {
+            console.log(result);
+        }
+    };
 
-    function uploadLocationResult(result) {
-        console.log(result);
-    }
-
-    function stopLocation() {
+    webJS = {
+        stopLocation : function () {
         window.webkit.messageHandlers.stopLocation.postMessage('uploadLocationResult');
     }
     //-------通讯录-------------
     function uploadContact() {
-        window.webkit.messageHandlers.uploadContact.postMessage('');
+        window.webkit.messageHandlers.uploadContact.postMessage('uploadContactResult');
     }
 
     function uploadContactResult(result) {

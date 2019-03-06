@@ -196,7 +196,6 @@
     [self.imgView removeFromSuperview];
     _url = url;
     _currentUrl = _url;
-    [self setNavTitle];
     //    _yw_bannerUrl = @"http://baidu.com";
     
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
@@ -227,10 +226,10 @@
     [self.view addSubview:self.webView];
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
     
-    //    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_yw_bannerUrl]];
-//    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
+    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
+//    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
-    
+
     [self.webView loadRequest:request];
 }
 
@@ -721,7 +720,8 @@
         NSMutableDictionary* params = [NSMutableDictionary dictionaryWithDictionary:dic];
         [params setObject:[NSNumber numberWithInt:1] forKey:@"status"];
         NSString* str = [Util getJsonWith:params];
-        NSString *alertJS= [NSString stringWithFormat:@"%@(%@)", method, str];//准备执行的js代码
+//        webJS.uploadLocationResult(1);
+        NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)", method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
         }];
     });
@@ -737,7 +737,7 @@
         [params setObject:code forKey:@"code"];
         NSString* str = [Util getJsonWith:params];
         
-        NSString *alertJS= [NSString stringWithFormat:@"%@(%@)",method, str];//准备执行的js代码
+        NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)",method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
         }];
     });
@@ -994,6 +994,10 @@
     self.titleLabel.text = titleStr;
 }
 
+- (void)setTitleColor:(NSString *)titleColor {
+    _titleColor = titleColor;
+    self.titleLabel.textColor = [UIColor colorWithHexString:titleColor];
+}
 - (void)setHiddenBack:(BOOL)hiddenBack {
     _hiddenBack = hiddenBack;
     self.backBtn.hidden = hiddenBack;

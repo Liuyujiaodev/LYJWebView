@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, LYJWebViewType) {
 @property (nonatomic, assign) BOOL useCustomNav;
 @property (nonatomic, copy) NSString* userAgent;
 @property (nonatomic, copy) NSString* titleStr;
+@property (nonatomic, copy) NSString* titleColor;
 
 @property (nonatomic, assign) BOOL toRootVC;
 @property (nonatomic, assign) BOOL hiddenBack;
