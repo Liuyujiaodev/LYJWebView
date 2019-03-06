@@ -31,8 +31,10 @@ typedef NS_ENUM(NSInteger, LYJWebViewType) {
 @property (nonatomic, copy) NSString* titleStr;
 
 @property (nonatomic, assign) BOOL toRootVC;
+@property (nonatomic, assign) BOOL hiddenBack;
 @property (nonatomic, assign) LYJWebViewType type;
 
+- (instancetype)initWithUrl:(NSString*)url;
 - (void)setBackImg:(UIImage*)backImg closeImg:(UIImage*)closeImg shareImg:(UIImage*)shareImg;
 
 @end

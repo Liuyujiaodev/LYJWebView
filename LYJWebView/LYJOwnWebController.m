@@ -53,6 +53,18 @@
 
 @implementation LYJOwnWebController
 
+- (instancetype)initWithUrl:(NSString*)url {
+    if (self = [super init]) {
+        self.url = url;
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self setNavTitle];
+}
+
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self setDefaultParams];
@@ -83,7 +95,9 @@
 
 - (void)setBackImg:(UIImage*)backImg closeImg:(UIImage*)closeImg shareImg:(UIImage*)shareImg {
     [self.backBtn setImage:backImg forState:UIControlStateNormal];
+    self.backBtn.frame = CGRectMake(20, APP_STATUS_HEIGHT + (APP_NAV_BAR_HEIGHT - backImg.size.height) / 2, backImg.size.width, backImg.size.height);
     [self.closeBtn setImage:closeImg forState:UIControlStateNormal];
+    self.closeBtn.frame = CGRectMake(self.backBtn.right + 20, APP_STATUS_HEIGHT + (APP_NAV_BAR_HEIGHT - closeImg.size.height) / 2, closeImg.size.width, closeImg.size.height);
     [self.shareBtn setImage:shareImg forState:UIControlStateNormal];
 }
 
@@ -97,11 +111,6 @@
     
     self.backBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, (APP_STATUS_NAVBAR_HEIGHT - 24)/2 + APP_STATUS_HEIGHT/2, 50, 24)];
     [self.backBtn addTarget:self action:@selector(backBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    if (self.type != LYJWebViewTypeZDGJ) {
-        self.backBtn.hidden = YES;
-        self.backBtn.enabled = NO;
-    }
-
     [self.navView addSubview:self.backBtn];
     
     
@@ -185,6 +194,7 @@
 
 - (void)setUrl:(NSString *)url {
     [self.imgView removeFromSuperview];
+    _url = url;
     _currentUrl = _url;
     [self setNavTitle];
     //    _yw_bannerUrl = @"http://baidu.com";
@@ -218,8 +228,8 @@
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
     
     //    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_yw_bannerUrl]];
-    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];
+//    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
     
     [self.webView loadRequest:request];
 }
@@ -982,5 +992,11 @@
 - (void)setTitleStr:(NSString *)titleStr {
     _titleStr = titleStr;
     self.titleLabel.text = titleStr;
+}
+
+- (void)setHiddenBack:(BOOL)hiddenBack {
+    _hiddenBack = hiddenBack;
+    self.backBtn.hidden = hiddenBack;
+    self.backBtn.enabled = !hiddenBack;
 }
 @end
