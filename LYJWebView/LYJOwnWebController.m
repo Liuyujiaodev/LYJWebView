@@ -102,7 +102,6 @@
     //    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
     //    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
-    [request setValue:self.cookiesStr forHTTPHeaderField:@"Cookie"];
     
     [self.webView loadRequest:request];
     
@@ -970,28 +969,6 @@
 - (void)setColor:(NSString *)color {
     _color = color;
     self.navView.backgroundColor = [UIColor colorWithHexString:self.color];
-}
-
-- (void)setUserAgent:(NSString *)userAgent {
-    _userAgent = userAgent;
-    __weak typeof(self) weakSelf = self;
-    
-    [self.webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        
-        NSString *userAgent = result;
-        NSString *newUserAgent = [userAgent stringByAppendingString:@" Appended Custom User Agent"];
-        
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:newUserAgent, @"UserAgent", nil];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-        
-        strongSelf.webView = [[WKWebView alloc] initWithFrame:strongSelf.view.bounds];
-        
-        // After this point the web view will use a custom appended user agent
-        [strongSelf.webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
-            NSLog(@"%@", result);
-        }];
-    }];
 }
 
 - (void)setUseCustomNav:(BOOL)useCustomNav {
