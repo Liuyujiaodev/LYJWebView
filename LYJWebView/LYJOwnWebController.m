@@ -69,7 +69,20 @@
 - (void)initWebView {
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
     WKUserContentController *userController = [[WKUserContentController alloc] init];
-    configuration.userContentController = userController;
+    
+    //设置cookie
+    NSMutableString *cookieValue = [[NSMutableString alloc] init];
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    
+    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
+        NSString *appendString = [NSString stringWithFormat:@"%@=%@;", cookie.name, cookie.value];
+        [cookieValue appendFormat:@"document.cookie='%@';", appendString];
+    }
+    WKUserScript * cookieScript = [[WKUserScript alloc]
+                                   initWithSource: cookieValue
+                                   injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                                   forMainFrameOnly:NO];
+    [userController addUserScript:cookieScript];
     
     [userController addScriptMessageHandler:self name:@"startSJMHTaobao"];
     [userController addScriptMessageHandler:self name:@"uploadLocation"];
@@ -90,6 +103,8 @@
     [userController addScriptMessageHandler:self name:@"stopAutoStep"];
     [userController addScriptMessageHandler:self name:@"popController"];
     
+    configuration.userContentController = userController;
+
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
     self.webView.navigationDelegate = self;
     self.webView.UIDelegate = self;
@@ -631,44 +646,48 @@
     [liveInfoDict setObject:number forKey:@"idcard_number"];
     [liveInfoDict setObject:[NSNumber numberWithInt:1] forKey:@"verbose"];
     
-    [[DemoMGFaceIDNetwork singleton] queryDemoMGFaceIDAntiSpoofingBizTokenLiveConfig:liveInfoDict key:self.yw_face_key
+    [[DemoMGFaceIDNetwork singleton] queryDemoMGFaceIDAntiSpoofingBizTokenLiveConfig:liveInfoDict
+                                                                                 key:self.yw_face_key
                                                                               secret:self.yw_face_secret
                                                                              success:^(NSInteger statusCode, NSDictionary *responseObject) {
                                                                                  if (statusCode == 200 && responseObject && [[responseObject allKeys] containsObject:@"biz_token"] && [responseObject objectForKey:@"biz_token"]) {
                                                                                      MGFaceIDLiveDetectError* error;
                                                                                      MGFaceIDLiveDetectManager* liveDetectManager = [[MGFaceIDLiveDetectManager alloc] initMGFaceIDLiveDetectManagerWithBizToken:[responseObject objectForKey:@"biz_token"] language:MGFaceIDLiveDetectLanguageCh networkHost:@"https://api.megvii.com" extraData:@{} error:&error];
                                                                                      
+                                                                                     
                                                                                      if (error || !liveDetectManager) {
                                                                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                             
                                                                                              [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1000]];//初始化失败
                                                                                              return;
                                                                                          });
                                                                                      }
+                                                                                     
                                                                                      [liveDetectManager startMGFaceIDLiveDetectWithCurrentController:self
                                                                                                                                             callback:^(MGFaceIDLiveDetectError *error, NSData *deltaData, NSString *bizTokenStr, NSDictionary *extraOutDataDict) {
-                                                                                                                                                if (error.errorType != MGFaceIDLiveDetectErrorNone) {
+                                                                                                                                                AVAuthorizationStatus authStatus =  [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+                                                                                                                                                if (error.errorType == MGFaceIDLiveDetectErrorNotCameraPermission && authStatus == AVAuthorizationStatusDenied) {
                                                                                                                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                                                                                                                         [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1001]];//没有相机权限
-                                                                                                                                                    });                                                         } else  if(deltaData) {
-                                                                                                                                                        [[DemoMGFaceIDNetwork singleton] queryDemoMGFaceIDAntiSpoofingVerifyWithBizToken:[responseObject objectForKey:@"biz_token"]
-                                                                                                                                                         
-                                                                                                                                                                                                                                     key:self.yw_face_key
-                                                                                                                                                         
-                                                                                                                                                                                                                                  secret:self.yw_face_secret                                                                                                                                        verify:deltaData
-                                                                                                                                                                                                                                 success:^(NSInteger statusCode, NSDictionary *responseObject) {
+                                                                                                                                                    });
+                                                                                                                                                } else  if(deltaData) {
+                                                                                                                                                    //上传数据
+                                                                                                                                                    [[DemoMGFaceIDNetwork singleton] queryDemoMGFaceIDAntiSpoofingVerifyWithBizToken:[responseObject objectForKey:@"biz_token"]
+                                                                                                                                                                                                                                 key:self.yw_face_key
+                                                                                                                                                                                                                              secret:self.yw_face_secret                                                                                                                                      verify:deltaData
+                                                                                                                                                                                                                             success:^(NSInteger statusCode, NSDictionary *responseObject) {
+                                                                                                                                                                                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                                                                                                                                                     [self successWithMethod:resultMethod dic:responseObject];
+                                                                                                                                                                                                                                 });                                                                                                                                           }failure:^(NSInteger statusCode, NSError *error) {
                                                                                                                                                                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                                                                                                                                                         [self successWithMethod:resultMethod dic:responseObject];
-                                                                                                                                                                                                                                     });                                                                                                                                           }failure:^(NSInteger statusCode, NSError *error) {
-                                                                                                                                                                                                                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                                                                                                                                                             [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1002]];//face++验证失败
-                                                                                                                                                                                                                                         });
-                                                                                                                                                                                                                                     }];
-                                                                                                                                                    }
+                                                                                                                                                                                                                                         [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1002]];//face++验证失败
+                                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                                 }];
+                                                                                                                                                } else {
+                                                                                                                                                    [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:error.errorType]];//没有相机权限
+                                                                                                                                                }
                                                                                                                                             }];
                                                                                  } else {
                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                         
                                                                                          [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1000]];//初始化失败
                                                                                      });
                                                                                  }
@@ -681,7 +700,6 @@
     
     
 }
-
 
 #pragma mark - 数据磨合接口
 
@@ -999,6 +1017,11 @@
     if (iSiOS9) {
         [wk evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
             NSString *oldAgent = result;
+            
+            if (!oldAgent) {
+                oldAgent = [[[UIWebView alloc] init] stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+                
+            }
             
             if (![oldAgent hasSuffix:currentUserAgent]) {
                 NSString *customUserAgent = [NSString stringWithFormat:@"%@%@", oldAgent,currentUserAgent];
