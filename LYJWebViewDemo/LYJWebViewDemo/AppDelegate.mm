@@ -7,8 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "YLWebController.h"
 #import "LYJOwnWebController.h"
-
 @interface AppDelegate ()
 
 @end
@@ -18,7 +18,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    LYJOwnWebController* webVC = [[LYJOwnWebController alloc] initWithUrl:@""];
+    YLWebController* webVC = [[YLWebController alloc] initWithUrl:@""];
+//    LYJOwnWebController* webVC = [[LYJOwnWebController alloc] initWithUrl:@""];
     webVC.useCustomNav = NO;
     UINavigationController* vc = [[UINavigationController alloc] initWithRootViewController:webVC];
     self.window.rootViewController = vc;

@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LYJWebView/LYJOwnWebController.m"
-            timestampString = "573551904.013857"
+            timestampString = "573643381.860586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "726"
             endingLineNumber = "726"
-            landmarkName = "-successWithMethod:dic:"
+            landmarkName = "-thePBMissionWithCode:withMessage:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LYJWebView/LYJOwnWebController.m"
-            timestampString = "573551904.014307"
+            timestampString = "573643381.860999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "719"
             endingLineNumber = "719"
-            landmarkName = "-successWithMethod:dic:"
+            landmarkName = "-thePBMissionWithCode:withMessage:"
             landmarkType = "7">
             <Locations>
                <Location
@@ -42,7 +42,7 @@
                   moduleName = "LYJWebViewDemo"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liuyujiao/Documents/YunLi/project/Client/LYJWebView/LYJWebView/LYJOwnWebController.m"
-                  timestampString = "573551904.249254"
+                  timestampString = "573643381.995876"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "719"
@@ -57,7 +57,7 @@
                   moduleName = "LYJWebViewDemo"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liuyujiao/Documents/YunLi/project/Client/LYJWebView/LYJWebView/LYJOwnWebController.m"
-                  timestampString = "573551904.2530251"
+                  timestampString = "573643381.997842"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "719"
@@ -72,7 +72,7 @@
                   moduleName = "LYJWebViewDemo"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liuyujiao/Documents/YunLi/project/Client/LYJWebView/LYJWebView/LYJOwnWebController.m"
-                  timestampString = "573551904.255052"
+                  timestampString = "573643381.9997751"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "719"
@@ -80,54 +80,6 @@
                   offsetFromSymbolStart = "20">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../LYJWebView/LYJOwnWebController.m"
-            timestampString = "573551904.014589"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
-            landmarkName = "-BMKLocationManager:didUpdateLocation:orError:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../LYJWebView/LYJOwnWebController.m"
-            timestampString = "573551904.014848"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "510"
-            endingLineNumber = "510"
-            landmarkName = "-uploadLocation:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../LYJWebView/LYJOwnWebController.m"
-            timestampString = "573551904.0150959"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "577"
-            endingLineNumber = "577"
-            landmarkName = "-BMKLocationManager:didUpdateLocation:orError:"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

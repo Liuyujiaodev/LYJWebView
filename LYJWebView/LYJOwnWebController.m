@@ -63,6 +63,53 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setNavTitle];
+    [self initWebView];
+}
+
+- (void)initWebView {
+    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+    WKUserContentController *userController = [[WKUserContentController alloc] init];
+    configuration.userContentController = userController;
+    
+    [userController addScriptMessageHandler:self name:@"startSJMHTaobao"];
+    [userController addScriptMessageHandler:self name:@"uploadLocation"];
+    [userController addScriptMessageHandler:self name:@"uploadContact"];
+    [userController addScriptMessageHandler:self name:@"faceAuth"];
+    [userController addScriptMessageHandler:self name:@"setContactAuth"];
+    [userController addScriptMessageHandler:self name:@"setLocationAuth"];
+    [userController addScriptMessageHandler:self name:@"setAuthPhoto"];
+    [userController addScriptMessageHandler:self name:@"showSettingView"];
+    [userController addScriptMessageHandler:self name:@"clearUrlCache"];
+    [userController addScriptMessageHandler:self name:@"clearCookie"];
+    [userController addScriptMessageHandler:self name:@"showLeftBackBtn"];
+    [userController addScriptMessageHandler:self name:@"stopLocation"];
+    [userController addScriptMessageHandler:self name:@"checkAudioStatus"];
+    [userController addScriptMessageHandler:self name:@"uploadStep"];
+    [userController addScriptMessageHandler:self name:@"cmPedomerStep"];
+    [userController addScriptMessageHandler:self name:@"autoStep"];
+    [userController addScriptMessageHandler:self name:@"stopAutoStep"];
+    [userController addScriptMessageHandler:self name:@"popController"];
+    
+    self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
+    self.webView.navigationDelegate = self;
+    self.webView.UIDelegate = self;
+    [self.view addSubview:self.webView];
+    
+    
+    
+    [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
+    
+    //    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
+    //    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
+    [request setValue:self.cookiesStr forHTTPHeaderField:@"Cookie"];
+    
+    [self.webView loadRequest:request];
+    
+    [self setDefaultParams];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noConnect) name:@"no-connect" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -196,41 +243,6 @@
     [self.imgView removeFromSuperview];
     _url = url;
     _currentUrl = _url;
-    //    _yw_bannerUrl = @"http://baidu.com";
-    
-    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-    WKUserContentController *userController = [[WKUserContentController alloc] init];
-    configuration.userContentController = userController;
-    [userController addScriptMessageHandler:self name:@"startSJMHTaobao"];
-    [userController addScriptMessageHandler:self name:@"uploadLocation"];
-    [userController addScriptMessageHandler:self name:@"uploadContact"];
-    [userController addScriptMessageHandler:self name:@"faceAuth"];
-    [userController addScriptMessageHandler:self name:@"setContactAuth"];
-    [userController addScriptMessageHandler:self name:@"setLocationAuth"];
-    [userController addScriptMessageHandler:self name:@"setAuthPhoto"];
-    [userController addScriptMessageHandler:self name:@"showSettingView"];
-    [userController addScriptMessageHandler:self name:@"clearUrlCache"];
-    [userController addScriptMessageHandler:self name:@"clearCookie"];
-    [userController addScriptMessageHandler:self name:@"showLeftBackBtn"];
-    [userController addScriptMessageHandler:self name:@"stopLocation"];
-    [userController addScriptMessageHandler:self name:@"checkAudioStatus"];
-    [userController addScriptMessageHandler:self name:@"uploadStep"];
-    [userController addScriptMessageHandler:self name:@"cmPedomerStep"];
-    [userController addScriptMessageHandler:self name:@"autoStep"];
-    [userController addScriptMessageHandler:self name:@"stopAutoStep"];
-    [userController addScriptMessageHandler:self name:@"popController"];
-
-    self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
-    self.webView.navigationDelegate = self;
-    self.webView.UIDelegate = self;
-    [self.view addSubview:self.webView];
-    [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
-    
-    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
-//    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
-
-    [self.webView loadRequest:request];
 }
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
@@ -1002,5 +1014,31 @@
     _hiddenBack = hiddenBack;
     self.backBtn.hidden = hiddenBack;
     self.backBtn.enabled = !hiddenBack;
+}
+
++ (void)modificationUA:(NSString*)currentUserAgent {
+    WKWebView *wk = [[WKWebView alloc] init];
+    
+    if (iSiOS9) {
+        [wk evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
+            NSString *oldAgent = result;
+            
+            if (![oldAgent hasSuffix:currentUserAgent]) {
+                NSString *customUserAgent = [NSString stringWithFormat:@"%@%@", oldAgent,currentUserAgent];
+                [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent":customUserAgent, @"User-Agent":customUserAgent}];
+            }
+        }];
+    } else {//适配iOS8，下面的方法不能少
+        NSString *oldAgent = [[[UIWebView alloc] init] stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+        
+        if (![oldAgent hasPrefix:currentUserAgent]) {
+            NSString *customUserAgent = [NSString stringWithFormat:@"%@ %@", currentUserAgent, oldAgent];
+            
+            NSDictionary *dictionnary = [[NSDictionary alloc] initWithObjectsAndKeys:customUserAgent, @"UserAgent", nil];
+            [[NSUserDefaults standardUserDefaults] registerDefaults:dictionnary];
+            
+            [wk setValue:customUserAgent forKey:@"applicationNameForUserAgent"];
+        }
+    }
 }
 @end

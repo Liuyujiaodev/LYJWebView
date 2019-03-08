@@ -31,6 +31,7 @@
 		092C946A222E75560054DCC5 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C9468222E75560054DCC5 /* CoreMotion.framework */; };
 		092C946C222E75630054DCC5 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C946B222E75630054DCC5 /* WebKit.framework */; };
 		092C946E222E75700054DCC5 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C946D222E75700054DCC5 /* Social.framework */; };
+		094EA93E223119470099A8B0 /* YLWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 094EA93D223119470099A8B0 /* YLWebController.m */; };
 		686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,8 @@
 		092C9468222E75560054DCC5 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		092C946B222E75630054DCC5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		092C946D222E75700054DCC5 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		094EA93C223119470099A8B0 /* YLWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLWebController.h; sourceTree = "<group>"; };
+		094EA93D223119470099A8B0 /* YLWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLWebController.m; sourceTree = "<group>"; };
 		2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LYJWebViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32A44810EBD9AA21F6FC4F77 /* Pods-LYJWebViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		99879AEEC65E8F8BE23E66EF /* Pods-LYJWebViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -135,6 +138,8 @@
 		092C9444222CBF470054DCC5 /* LYJWebView */ = {
 			isa = PBXGroup;
 			children = (
+				094EA93C223119470099A8B0 /* YLWebController.h */,
+				094EA93D223119470099A8B0 /* YLWebController.m */,
 				092C945A222E5C8B0054DCC5 /* CommonUtil.h */,
 				092C945B222E5C8B0054DCC5 /* CommonUtil.m */,
 				092C9445222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle */,
@@ -329,6 +334,7 @@
 				092C9433222946550054DCC5 /* ViewController.m in Sources */,
 				092C9453222CBF470054DCC5 /* LYJOwnWebController.m in Sources */,
 				092C945C222E5C8B0054DCC5 /* CommonUtil.m in Sources */,
+				094EA93E223119470099A8B0 /* YLWebController.m in Sources */,
 				092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */,
 				092C9458222CBF470054DCC5 /* DemoMGFaceIDNetwork.m in Sources */,
 				092C943E222946560054DCC5 /* main.m in Sources */,

@@ -100,8 +100,7 @@
         }
     };
 
-    webJS = {
-        stopLocation : function () {
+    function stopLocation() {
         window.webkit.messageHandlers.stopLocation.postMessage('uploadLocationResult');
     }
     //-------通讯录-------------
