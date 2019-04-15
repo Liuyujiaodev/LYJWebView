@@ -13,7 +13,6 @@
 #import <UserNotifications/UserNotifications.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/PHPhotoLibrary.h>
-#import <WebKit/WebKit.h>
 //#import <HealthKit/HealthKit.h>
 //#import "HealthKitManage.h"
 #import <CoreMotion/CoreMotion.h>
@@ -70,20 +69,6 @@
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
     WKUserContentController *userController = [[WKUserContentController alloc] init];
     
-    //设置cookie
-    NSMutableString *cookieValue = [[NSMutableString alloc] init];
-    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    
-    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
-        NSString *appendString = [NSString stringWithFormat:@"%@=%@;", cookie.name, cookie.value];
-        [cookieValue appendFormat:@"document.cookie='%@';", appendString];
-    }
-    WKUserScript * cookieScript = [[WKUserScript alloc]
-                                   initWithSource: cookieValue
-                                   injectionTime:WKUserScriptInjectionTimeAtDocumentStart
-                                   forMainFrameOnly:NO];
-    [userController addUserScript:cookieScript];
-    
     [userController addScriptMessageHandler:self name:@"startSJMHTaobao"];
     [userController addScriptMessageHandler:self name:@"uploadLocation"];
     [userController addScriptMessageHandler:self name:@"uploadContact"];
@@ -104,24 +89,17 @@
     [userController addScriptMessageHandler:self name:@"popController"];
     
     configuration.userContentController = userController;
-
+    
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
+    
     self.webView.navigationDelegate = self;
     self.webView.UIDelegate = self;
     [self.view addSubview:self.webView];
     
-    
-    
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
-    
-    //    _url =  [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"html"];
-    //    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
-    
     [self.webView loadRequest:request];
-    
     [self setDefaultParams];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noConnect) name:@"no-connect" object:nil];
 }
@@ -224,6 +202,8 @@
             self.closeBtn.hidden = YES;
             self.closeBtn.enabled = NO;
         } else {
+            [self clearWbCache];
+            [self popOutController];
             if (self.toRootVC) {
                 [self.navigationController popToRootViewControllerAnimated:YES];
             } else {
@@ -234,10 +214,18 @@
 }
 
 - (void)closeBtnAction {
+    [self clearWbCache];
+    
     if (self.lastUrl) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_lastUrl]]];
     } else {
-        [self backBtnAction];
+        [self popOutController];
+        if (self.toRootVC) {
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        } else {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        
     }
 }
 
@@ -259,11 +247,16 @@
     _currentUrl = _url;
 }
 
+#pragma mark - WKNavigationDelegate
+#pragma mark - 截取当前加载的URL 为每一个请求添加token
+
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    [self setToken];
     [self setDefaultParams];
 }
 
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    [self finishLoad];
     if (self.type != LYJWebViewTypeZDGJ) {
         self.titleLabel.text =  webView.title;//获取当前页面的title
     }
@@ -274,7 +267,7 @@
             self.backBtn.hidden = NO;
             self.backBtn.enabled = YES;
         }
-
+        
         
         self.closeBtn.hidden = NO;
         self.closeBtn.enabled = YES;
@@ -449,7 +442,19 @@
 
 #pragma mark - 设置默认参数
 
+- (void)setToken {
+    NSString* token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    if (token) {
+        
+        NSString* tokenValue = [NSString stringWithFormat:@"var app = %@", [Util getJsonWith:[NSDictionary dictionaryWithObject:token forKey:@"token"]]];
+        NSString* tokenJS = [NSString stringWithFormat:@"%@", tokenValue];
+        [self.webView evaluateJavaScript:tokenJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
+        }];
+    }
+}
+
 - (void)setDefaultParams {
+    
     NSString* str = [Util getJsonWith:[self addFixedArgumentsWithDictionary:[CommonUtil Commondata]]];
     NSString* value = [NSString stringWithFormat:@"var appConfig = %@", str];
     
@@ -457,6 +462,8 @@
     
     [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
     }];
+    
+    
 }
 
 #pragma mark - clear cookie
@@ -616,13 +623,13 @@
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     switch (status) {
-            case kCLAuthorizationStatusNotDetermined:
+        case kCLAuthorizationStatusNotDetermined:
             [self.locationMag requestWhenInUseAuthorization];  //调用了这句,就会弹出允许框了.
             break;
-            case kCLAuthorizationStatusAuthorizedAlways:
+        case kCLAuthorizationStatusAuthorizedAlways:
             [self sendLocation];
             break;
-            case kCLAuthorizationStatusAuthorizedWhenInUse:
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
             [self sendLocation];
             break;
         default:
@@ -665,9 +672,16 @@
                                                                                      [liveDetectManager startMGFaceIDLiveDetectWithCurrentController:self
                                                                                                                                             callback:^(MGFaceIDLiveDetectError *error, NSData *deltaData, NSString *bizTokenStr, NSDictionary *extraOutDataDict) {
                                                                                                                                                 AVAuthorizationStatus authStatus =  [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-                                                                                                                                                if (error.errorType == MGFaceIDLiveDetectErrorNotCameraPermission && authStatus == AVAuthorizationStatusDenied) {
+                                                                                                                                                if (authStatus == AVAuthorizationStatusDenied) {
                                                                                                                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                                                                                                                         [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1001]];//没有相机权限
+                                                                                                                                                        
+                                                                                                                                                    });
+                                                                                                                                                }
+                                                                                                                                                if (error.errorType != MGFaceIDLiveDetectErrorNone) {
+                                                                                                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                                                                        [self failuerWithMethod:resultMethod code:[NSNumber numberWithInt:1002]];//没有相机权限
+                                                                                                                                                        
                                                                                                                                                     });
                                                                                                                                                 } else  if(deltaData) {
                                                                                                                                                     //上传数据
@@ -749,7 +763,7 @@
         NSMutableDictionary* params = [NSMutableDictionary dictionaryWithDictionary:dic];
         [params setObject:[NSNumber numberWithInt:1] forKey:@"status"];
         NSString* str = [Util getJsonWith:params];
-//        webJS.uploadLocationResult(1);
+        //        webJS.uploadLocationResult(1);
         NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)", method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
         }];
@@ -912,16 +926,16 @@
     NSInteger audioStatusAuth = 0;
     AVAuthorizationStatus audioStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     switch (audioStatus) {
-            case AVAuthorizationStatusNotDetermined:
+        case AVAuthorizationStatusNotDetermined:
             audioStatusAuth = 2;
             break;
-            case AVAuthorizationStatusRestricted:
+        case AVAuthorizationStatusRestricted:
             audioStatusAuth = 0;
             break;
-            case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusDenied:
             audioStatusAuth = 0;
             break;
-            case AVAuthorizationStatusAuthorized:
+        case AVAuthorizationStatusAuthorized:
             audioStatusAuth = 1;
             break;
         default:
@@ -1041,4 +1055,33 @@
         }
     }
 }
+- (void)clearWbCache{
+    //    (NSHomeDirectory)/Library/Caches/(current application name, [[NSProcessInfo processInfo] processName])
+    // 清除缓存
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[NSURLCache sharedURLCache] setDiskCapacity:0];
+    [[NSURLCache sharedURLCache] setMemoryCapacity:0];
+    [self.webView.configuration.userContentController removeAllUserScripts];
+    self.webView = nil;
+    // 清除磁盘（上面两句就是已经执行好了，下面只是一个思路）  路径来源可以看上面的图（不过这里）
+    /*
+     NSString *libraryDir = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,NSUserDomainMask, YES)[0];
+     NSString *bundleId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+     NSString *webkitFolderInLib = [NSString stringWithFormat:@"%@/WebKit",libraryDir];
+     NSString *webKitFolderInCaches = [NSString stringWithFormat:@"%@/Caches/%@/WebKit",libraryDir,bundleId];
+     NSError *error;
+     [[NSFileManager defaultManager] removeItemAtPath:webKitFolderInCaches error:&error];
+     [[NSFileManager defaultManager] removeItemAtPath:webkitFolderInLib error:nil];
+     */
+}
+
+
+- (void)finishLoad {
+    
+}
+
+- (void)popOutController {
+    
+}
+
 @end
