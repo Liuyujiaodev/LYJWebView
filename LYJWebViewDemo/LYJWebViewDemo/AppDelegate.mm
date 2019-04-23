@@ -7,7 +7,9 @@
 //
 
 #import "AppDelegate.h"
-#import "LYJOwnWebController.h"
+#import "ViewController.h"
+#import "JSCacheUtil.h"
+
 @interface AppDelegate ()
 
 @end
@@ -17,7 +19,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    LYJOwnWebController* webVC = [[LYJOwnWebController alloc] initWithUrl:@""];
+    [JSCacheUtil saveJSFile:@[@"https://ylxdcdn.yunlibeauty.com/pro/apply/vendor_7e308103.js", @"https://ylxdcdn.yunlibeauty.com/pro/apply/app_56524d74.js", @"https://ylxdcdn.yunlibeauty.com/javascripts/dist/jsweixin-1.1.0.js", @"https://g.alicdn.com/sd/nch5/index.js?t=2019042310", @"https://ylxdcdn.yunlibeauty.com/javascripts/app/__build__/main.44a81a5e22b10c46941c.js"]];
+    [JSCacheUtil saveCSSFile:@[@"https://ylxdcdn.yunlibeauty.com/stylesheets/style/style.css", @"https://ylxdcdn.yunlibeauty.com/stylesheets/dist/slick.css"]];
+
+    ViewController* webVC = [[ViewController alloc] initWithUrl:@""];
     webVC.useCustomNav = NO;
     UINavigationController* vc = [[UINavigationController alloc] initWithRootViewController:webVC];
     self.window.rootViewController = vc;

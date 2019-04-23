@@ -677,6 +677,17 @@ NSString* getArchivePathForId(NSString* modelId) {
     }
 }
 
++(NSMutableArray *)localFile:(NSString*)folder {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDirectoryEnumerator *dirEnum = [fm enumeratorAtPath:folder];
+    NSString *fileName;
+    NSMutableArray *R = [NSMutableArray array];
+    
+    while (fileName = [dirEnum nextObject]) {
+        [R addObject:fileName];
+    }
+    return R;
+}
 
 + (void)showAlertView:(UIViewController*)vc title:(NSString*)title message:(NSString*)msg okAction:(NSString*)ok cancelAction:(NSString*)cancel okHandler:(void (^ __nullable)(UIAlertAction *action))okHandler cancelHandler:(void (^ __nullable)(UIAlertAction *action))cancelHandler {
     

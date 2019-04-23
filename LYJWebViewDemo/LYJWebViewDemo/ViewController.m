@@ -1,23 +1,39 @@
 //
-//  ViewController.m
-//  LYJWebViewDemo
+//  YLWebController.m
+//  YLClient
 //
-//  Created by 娇 on 2019/3/1.
-//  Copyright © 2019年 yunli. All rights reserved.
+//  Created by 刘玉娇 on 2018/11/14.
+//  Copyright © 2018年 yunli. All rights reserved.
 //
 
 #import "ViewController.h"
 
-@interface ViewController ()
-
-@end
-
 @implementation ViewController
 
+#pragma mark - 生命周期
+
+-(instancetype)initWithUrl:(NSString *)url {
+    //Todo 需要删除
+    url = @"https://ylxd.yunlibeauty.com/saas/apply/home?productId=2287&channelId=1380&cid=1116";
+    if (self = [super initWithUrl:url]) {
+        self.type = LYJWebViewTypeZDGJ;
+        self.yw_sjmh_key = @"1b2007c8ae0d490e9e2f089a1195adf2";
+        self.yw_sjmh_code = @"yunbeifq_mohe";
+//        self.yw_baidu_key = [YLCompanySettingUtil getBaiduMap];
+//        self.yw_face_key = kFACE_API_KEY;
+//        self.yw_face_secret = kFACE_API_SECRET;
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+//    [SVProgressHUD showWithStatus:@"数据加载中，请稍后..."];
+    
+    self.titleColor = @"0xffffff";
+    self.color = @"0xF46C28";
+    self.useCustomNav = YES;
+//    self.titleStr = APP_Name;
+    [self setBackImg:[UIImage imageNamed:@"nav_back"] closeImg:[UIImage imageNamed:@"close_white"] shareImg:[UIImage imageNamed:@""]];
 }
-
 
 @end

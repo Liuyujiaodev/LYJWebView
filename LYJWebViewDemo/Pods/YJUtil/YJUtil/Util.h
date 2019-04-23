@@ -190,6 +190,7 @@
 + (id<NSCoding>)cachedModelWithId:(NSString*)modelId;
 
 + (void)removeModelWithId:(NSString*)modelId;
++ (NSMutableArray*)localFile:(NSString*)folder;
 
 + (NSString*_Nullable)getRsaStr:(NSString*_Nullable)str;
 

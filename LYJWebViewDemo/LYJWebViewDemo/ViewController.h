@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+#import "LYJOwnWebController.h"
+
+@interface ViewController : LYJOwnWebController
 
 
 @end

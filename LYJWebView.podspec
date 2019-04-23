@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
 s.name     = "LYJWebView"
-s.version  = "1.1.1"
+s.version  = "1.2.0"
 s.license  = "MIT"
 s.summary  = "private web view"
 s.homepage = "https://github.com/Liuyujiaodev/LYJWebView.git"

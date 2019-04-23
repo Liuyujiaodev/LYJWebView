@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		091AF18D226D9A2600463E9D /* NSURLProtocol+WKWebVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 091AF189226D9A2500463E9D /* NSURLProtocol+WKWebVIew.m */; };
+		091AF18E226D9A2600463E9D /* HybridNSURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 091AF18A226D9A2500463E9D /* HybridNSURLProtocol.m */; };
 		092C9430222946540054DCC5 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 092C942F222946540054DCC5 /* AppDelegate.mm */; };
 		092C9433222946550054DCC5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 092C9432222946550054DCC5 /* ViewController.m */; };
 		092C9436222946550054DCC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 092C9434222946550054DCC5 /* Main.storyboard */; };
@@ -31,10 +33,15 @@
 		092C946C222E75630054DCC5 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C946B222E75630054DCC5 /* WebKit.framework */; };
 		092C946E222E75700054DCC5 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 092C946D222E75700054DCC5 /* Social.framework */; };
 		094EA9442232070E0099A8B0 /* LYJOwnWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 094EA9422232070E0099A8B0 /* LYJOwnWebController.m */; };
+		0957DE21226EAB0500A678A8 /* JSCacheUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 0957DE20226EAB0500A678A8 /* JSCacheUtil.m */; };
 		686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		091AF189226D9A2500463E9D /* NSURLProtocol+WKWebVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLProtocol+WKWebVIew.m"; sourceTree = "<group>"; };
+		091AF18A226D9A2500463E9D /* HybridNSURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HybridNSURLProtocol.m; sourceTree = "<group>"; };
+		091AF18B226D9A2600463E9D /* NSURLProtocol+WKWebVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLProtocol+WKWebVIew.h"; sourceTree = "<group>"; };
+		091AF18C226D9A2600463E9D /* HybridNSURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HybridNSURLProtocol.h; sourceTree = "<group>"; };
 		092C942B222946540054DCC5 /* LYJWebViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LYJWebViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		092C942E222946540054DCC5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		092C942F222946540054DCC5 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
@@ -68,6 +75,8 @@
 		092C946D222E75700054DCC5 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		094EA9422232070E0099A8B0 /* LYJOwnWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LYJOwnWebController.m; sourceTree = "<group>"; };
 		094EA9432232070E0099A8B0 /* LYJOwnWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LYJOwnWebController.h; sourceTree = "<group>"; };
+		0957DE1F226EAB0500A678A8 /* JSCacheUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSCacheUtil.h; sourceTree = "<group>"; };
+		0957DE20226EAB0500A678A8 /* JSCacheUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSCacheUtil.m; sourceTree = "<group>"; };
 		2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LYJWebViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32A44810EBD9AA21F6FC4F77 /* Pods-LYJWebViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		99879AEEC65E8F8BE23E66EF /* Pods-LYJWebViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -135,6 +144,10 @@
 		092C9444222CBF470054DCC5 /* LYJWebView */ = {
 			isa = PBXGroup;
 			children = (
+				091AF18C226D9A2600463E9D /* HybridNSURLProtocol.h */,
+				091AF18A226D9A2500463E9D /* HybridNSURLProtocol.m */,
+				091AF18B226D9A2600463E9D /* NSURLProtocol+WKWebVIew.h */,
+				091AF189226D9A2500463E9D /* NSURLProtocol+WKWebVIew.m */,
 				094EA9432232070E0099A8B0 /* LYJOwnWebController.h */,
 				094EA9422232070E0099A8B0 /* LYJOwnWebController.m */,
 				092C945A222E5C8B0054DCC5 /* CommonUtil.h */,
@@ -147,6 +160,8 @@
 				092C944E222CBF470054DCC5 /* YWAuthUtil.m */,
 				092C944F222CBF470054DCC5 /* DemoMGFaceIDNetwork.m */,
 				092C9451222CBF470054DCC5 /* sjmhPBBundle.bundle */,
+				0957DE1F226EAB0500A678A8 /* JSCacheUtil.h */,
+				0957DE20226EAB0500A678A8 /* JSCacheUtil.m */,
 			);
 			name = LYJWebView;
 			path = ../../LYJWebView;
@@ -326,6 +341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				091AF18D226D9A2600463E9D /* NSURLProtocol+WKWebVIew.m in Sources */,
 				092C9433222946550054DCC5 /* ViewController.m in Sources */,
 				092C945C222E5C8B0054DCC5 /* CommonUtil.m in Sources */,
 				092C9457222CBF470054DCC5 /* YWAuthUtil.m in Sources */,
@@ -333,6 +349,8 @@
 				094EA9442232070E0099A8B0 /* LYJOwnWebController.m in Sources */,
 				092C943E222946560054DCC5 /* main.m in Sources */,
 				092C9430222946540054DCC5 /* AppDelegate.mm in Sources */,
+				091AF18E226D9A2600463E9D /* HybridNSURLProtocol.m in Sources */,
+				0957DE21226EAB0500A678A8 /* JSCacheUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import "LYJOwnWebController.h"
+#import <WebKit/WebKit.h>
 #import "shujumohePB.h"
 #import "DemoMGFaceIDNetwork.h"
 #import <MGFaceIDLiveDetect/MGFaceIDLiveDetect.h>
@@ -25,6 +26,8 @@
 #import "Util.h"
 #import "UMMobClick/MobClick.h"
 #import "CommonUtil.h"
+#import "NSURLProtocol+WKWebVIew.h"
+#import "HybridNSURLProtocol.h"
 
 @interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, BMKLocationManagerDelegate, WKScriptMessageHandler>
 @property (nonatomic, strong) WKWebView* webView;
@@ -61,6 +64,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [NSURLProtocol registerClass:[HybridNSURLProtocol class]];
+
+    [NSURLProtocol wk_registerScheme:@"http"];
+    [NSURLProtocol wk_registerScheme:@"https"];
+    
     [self setNavTitle];
     [self initWebView];
 }
