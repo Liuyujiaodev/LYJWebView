@@ -7,7 +7,6 @@
 //
 
 #import "LYJOwnWebController.h"
-#import <WebKit/WebKit.h>
 #import "shujumohePB.h"
 #import "DemoMGFaceIDNetwork.h"
 #import <MGFaceIDLiveDetect/MGFaceIDLiveDetect.h>
@@ -20,25 +19,19 @@
 #import "Common.h"
 #import "YWAuthUtil.h"
 #import <CoreLocation/CoreLocation.h>
-#import <BMKLocationkit/BMKLocationComponent.h>
 #import "CommonCategory.h"
 #import "SVGKImage.h"
 #import "Util.h"
 #import "UMMobClick/MobClick.h"
 #import "CommonUtil.h"
-#import "NSURLProtocol+WKWebVIew.h"
-#import "HybridNSURLProtocol.h"
 
-@interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, BMKLocationManagerDelegate, WKScriptMessageHandler>
-@property (nonatomic, strong) WKWebView* webView;
+@interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, WKScriptMessageHandler>
 @property (nonatomic, strong) UIView* settingView;//拒绝后的浮层提示
-@property (nonatomic, strong) BMKLocationManager* locationManager;//百度地图定位
 @property (nonatomic, strong) CLLocationManager* locationMag;
 @property (nonatomic, strong) UIButton* backBtn;
 @property (nonatomic, strong) UIButton* closeBtn;
 @property (nonatomic, strong) UIButton* shareBtn;
 @property (nonatomic, strong) UILabel* titleLabel;
-@property (nonatomic, strong) UIView* navView;
 
 @property (nonatomic, copy) NSString* currentUrl;
 @property (nonatomic, copy) NSString* lastUrl;
@@ -64,11 +57,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [NSURLProtocol registerClass:[HybridNSURLProtocol class]];
-
-    [NSURLProtocol wk_registerScheme:@"http"];
-    [NSURLProtocol wk_registerScheme:@"https"];
-    
     [self setNavTitle];
     [self initWebView];
 }
@@ -95,6 +83,8 @@
     [userController addScriptMessageHandler:self name:@"autoStep"];
     [userController addScriptMessageHandler:self name:@"stopAutoStep"];
     [userController addScriptMessageHandler:self name:@"popController"];
+    [userController addScriptMessageHandler:self name:@"stopLoading"];
+    [userController addScriptMessageHandler:self name:@"jumpToLogin"];
     
     configuration.userContentController = userController;
     
@@ -118,6 +108,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noConnect) name:@"no-connect" object:nil];
+    
 }
 
 
@@ -134,7 +125,7 @@
 - (void)noConnect {
     NSString* title = self.titleLabel.text;
     self.titleLabel.text = [title stringByAppendingString:@"(未连接)"];
-    self.titleLabel.textColor = RGBColor(102, 102, 102);
+    self.titleLabel.textColor = RGBColor(0, 0, 0);
 }
 
 
@@ -161,8 +152,9 @@
     [self.navView addSubview:self.backBtn];
     
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((APPWidth - 200)/2, (APP_STATUS_NAVBAR_HEIGHT - 30)/2  + APP_STATUS_HEIGHT/2, 200, 30)];
-    self.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:17];
+    CGFloat height = kDevice_Is_iPhoneX ? 88 : 64;
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((APPWidth - 200)/2, height - 33 - 10, 200, 33)];
+    self.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium" size:18];
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.userInteractionEnabled = YES;
     self.titleLabel.textColor = RGBColor(3, 3, 3);
@@ -173,8 +165,8 @@
     
     self.closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.backBtn.right + 15, (APP_STATUS_NAVBAR_HEIGHT - 24)/2 + APP_STATUS_HEIGHT/2, 24, 24)];
     [self.closeBtn addTarget:self action:@selector(closeBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    self.closeBtn.hidden = YES;
-    self.closeBtn.enabled = NO;
+    //    self.closeBtn.hidden = YES;
+    //    self.closeBtn.enabled = NO;
     [self.navView addSubview:self.closeBtn];
     
     
@@ -211,7 +203,6 @@
             self.closeBtn.enabled = NO;
         } else {
             [self clearWbCache];
-            [self popOutController];
             if (self.toRootVC) {
                 [self.navigationController popToRootViewControllerAnimated:YES];
             } else {
@@ -222,28 +213,24 @@
 }
 
 - (void)closeBtnAction {
-    [self clearWbCache];
+    //    [self clearWbCache];
     
     if (self.lastUrl) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_lastUrl]]];
     } else {
-        [self popOutController];
+        
+        [self clearWbCache];
         if (self.toRootVC) {
             [self.navigationController popToRootViewControllerAnimated:YES];
         } else {
             [self.navigationController popViewControllerAnimated:YES];
         }
-        
     }
 }
 
 - (void)shareBtnAction {
     
-    NSArray *postItems=@[self.currentUrl];
-    
-    UIActivityViewController *avc = [[UIActivityViewController alloc]initWithActivityItems:postItems applicationActivities:nil];
-    
-    [self presentViewController:avc animated:YES completion:nil];
+    [self clearAllCache];
     
 }
 
@@ -265,20 +252,17 @@
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     [self finishLoad];
-    if (self.type != LYJWebViewTypeZDGJ) {
-        self.titleLabel.text =  webView.title;//获取当前页面的title
-    }
     NSString *currentURL = webView.URL.absoluteString;
-    if (![currentURL isEqualToString:_url]) {
+    DLog(@"=====fini=====%@", currentURL);
+    if (webView.URL.hasDirectoryPath) {
         _currentUrl = currentURL;
         if (self.type != LYJWebViewTypeZDGJ) {
             self.backBtn.hidden = NO;
             self.backBtn.enabled = YES;
+            self.closeBtn.hidden = NO;
+            self.closeBtn.enabled = YES;
         }
         
-        
-        self.closeBtn.hidden = NO;
-        self.closeBtn.enabled = YES;
     }
     
     NSString *currentHostUrl = [NSString stringWithFormat:@"%@://%@", [NSURL URLWithString:currentURL].scheme, [NSURL URLWithString:currentURL].host];
@@ -294,6 +278,8 @@
 - (void)showLeftBackBtn {
     self.backBtn.hidden = NO;
     self.backBtn.enabled = YES;
+    self.closeBtn.hidden = NO;
+    self.closeBtn.enabled = YES;
 }
 
 #pragma mark - JS调用的OC回调方法
@@ -336,10 +322,17 @@
         [self stopAutoStep];
     } else if ([message.name isEqualToString:@"popController"]) {
         [self popController];
+    } else if ([message.name isEqualToString:@"stopLoading"]) {
+        [self finishLoad];
+    } else if ([message.name isEqualToString:@"startLoading"]) {
+        [self startLoading];
+    } else if ([message.name isEqualToString:@"jumpToLogin"]) {
+        [self jumpToLogin];
     }
 }
 
 - (void)popController {
+    [self finishLoad];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -476,11 +469,30 @@
 
 #pragma mark - clear cookie
 
+- (void)clearAllCache {
+    [self clearCookie];
+    [self clearOtherCache];
+    [self clearUrlCache];
+}
+
 - (void)clearCookie {
     NSHTTPCookie *cookie;NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (cookie in [storage cookies]) {
         [storage deleteCookie:cookie];
     }
+    NSString *libraryPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *cookieLib = [libraryPath stringByAppendingString:@"/Cookies"];
+    [[NSFileManager defaultManager] removeItemAtPath:cookieLib error:nil];
+    
+}
+
+- (void)clearOtherCache {
+    NSString *libraryPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject;
+    //必须把这文件夹全部删除
+    NSString *webkitFolderInLib = [libraryPath stringByAppendingString:@"/WebKit"];
+    NSString *cachesFolderInLib = [libraryPath stringByAppendingString:@"/Caches"];
+    [[NSFileManager defaultManager] removeItemAtPath:webkitFolderInLib error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:cachesFolderInLib error:nil];
 }
 
 #pragma mark - 清除缓存
@@ -571,60 +583,35 @@
 }
 
 - (void)sendLocation {
-    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:self.yw_baidu_key authDelegate:self];
-    //初始化实例
-    _locationManager = [[BMKLocationManager alloc] init];
-    //设置delegate
-    _locationManager.delegate = self;
-    //设置返回位置的坐标系类型
-    _locationManager.coordinateType = BMKLocationCoordinateTypeBMK09LL;
-    //设置距离过滤参数
-    _locationManager.distanceFilter = kCLDistanceFilterNone;
-    //设置预期精度参数
-    _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    //设置应用位置类型
-    _locationManager.activityType = CLActivityTypeAutomotiveNavigation;
-    //设置是否自动停止位置更新
-    _locationManager.pausesLocationUpdatesAutomatically = NO;
-    //设置是否允许后台定位
-    _locationManager.allowsBackgroundLocationUpdates = NO;
-    //设置位置获取超时时间
-    _locationManager.locationTimeout = 10;
-    //设置获取地址信息超时时间
-    _locationManager.reGeocodeTimeout = 10;
-    [_locationManager startUpdatingLocation];
-    
+    [self.locationMag startUpdatingLocation];
 }
 
-- (void)BMKLocationManager:(BMKLocationManager * _Nonnull)manager didUpdateLocation:(BMKLocation * _Nullable)location orError:(NSError * _Nullable)error {
-    if (error == nil) {
-        NSMutableDictionary* params = [NSMutableDictionary dictionary];
-        NSString* address = @"";
-        if (location.rgcData.province) {
-            address = location.rgcData.province;
-        }
-        if (![address isEqualToString:location.rgcData.city]) {
-            address = [address stringAddStr:location.rgcData.city];
-        }
-        address = [[[address stringAddStr:location.rgcData.district] stringAddStr:location.rgcData.street] stringAddStr:location.rgcData.streetNumber];
-        NSString* longitude = [NSString stringWithFormat:@"%lf",location.location.coordinate.longitude];
-        NSString* latitude = [NSString stringWithFormat:@"%lf",location.location.coordinate.latitude];
-        
-        [params setObject:address forKey:@"address"];
-        [params setObject:longitude forKey:@"longitude"];
-        [params setObject:latitude forKey:@"latitude"];
-        [self successWithMethod:self.locationResultMethod dic:params];
-    } else {
-        [self failuerWithMethod:self.locationResultMethod code:[NSNumber numberWithInteger:1001]];
-    }
+// 地理位置发生改变时触发
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    
+    NSString* longitude = [NSString stringWithFormat:@"%lf",newLocation.coordinate.longitude];
+    NSString* latitude = [NSString stringWithFormat:@"%lf",newLocation.coordinate.latitude];
+    
+    NSMutableDictionary* params = [NSMutableDictionary dictionary];
+    [params setObject:longitude forKey:@"longitude"];
+    [params setObject:latitude forKey:@"latitude"];
+    [params setObject:@"1" forKey:@"isOriginLoc"];
+    [[NSUserDefaults standardUserDefaults] setObject:params forKey:@"address"];
+    [self successWithMethod:self.locationResultMethod dic:params];
+}
+
+// 定位失误时触发
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    [self failuerWithMethod:self.locationResultMethod code:[NSNumber numberWithInteger:1001]];
 }
 
 - (void)stopLocation {
-    if (_locationManager) {
-        [_locationManager stopUpdatingLocation];
+    if (_locationMag) {
+        [_locationMag stopUpdatingLocation];
     }
 }
-
 
 #pragma mark - 防止定位弹窗一闪就消失
 
@@ -772,6 +759,7 @@
         [params setObject:[NSNumber numberWithInt:1] forKey:@"status"];
         NSString* str = [Util getJsonWith:params];
         //        webJS.uploadLocationResult(1);
+        DLog(@"=====js==success====%@", params);
         NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)", method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
         }];
@@ -787,6 +775,7 @@
         [params setObject:[NSNumber numberWithInt:0] forKey:@"status"];
         [params setObject:code forKey:@"code"];
         NSString* str = [Util getJsonWith:params];
+        DLog(@"=====js==failuer====%@", params);
         
         NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)",method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
@@ -806,15 +795,26 @@
 }
 
 - (void)setAuthPhoto {
-    [self showSettingView:@"请允许访问相册"];
+    [self showSettingView:@"请允许访问相机"];
 }
 
 - (void)showSettingView:(NSString*)str {
-    self.settingView = [[UIView alloc] initWithFrame:CGRectMake((APPWidth - 280)/2, (self.view.height - 247)/2, 280, 247)];
+    UIView* shandowView = [[UIView alloc] initWithFrame:CGRectMake((APPWidth - 280)/2, (self.view.height - 247)/2, 280, 247)];
+    [self.view addSubview:shandowView];
+    
+    shandowView.layer.shadowColor = RGBAlphaColor(0, 0, 0, 0.64).CGColor;
+    shandowView.layer.shadowOffset = CGSizeMake(0,0);
+    shandowView.layer.shadowOpacity = 0.5;
+    // 阴影半径，默认3
+    shandowView.layer.shadowRadius = 5;
+    
+    self.settingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 247)];
     self.settingView.backgroundColor = RGBColor(249, 250, 252);
     self.settingView.layer.cornerRadius = 10;
     self.settingView.layer.masksToBounds = YES;
-    [self.view addSubview:self.settingView];
+    [shandowView addSubview:self.settingView];
+    
+    
     
     UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.settingView.width, 48)];
     titleLabel.text = str;
@@ -963,18 +963,17 @@
             if (self.type != LYJWebViewTypeZDGJ) {
                 self.backBtn.hidden = NO;
                 self.backBtn.enabled = YES;
+                self.closeBtn.hidden = NO;
+                self.closeBtn.enabled = YES;
             }
             
-            self.closeBtn.hidden = NO;
-            self.closeBtn.enabled = YES;
         } else {
             if (self.type != LYJWebViewTypeZDGJ) {
                 self.backBtn.hidden = YES;
                 self.backBtn.enabled = NO;
+                self.closeBtn.hidden = YES;
+                self.closeBtn.enabled = NO;
             }
-            
-            self.closeBtn.hidden = YES;
-            self.closeBtn.enabled = NO;
         }
     }
 }
@@ -1031,6 +1030,8 @@
     _hiddenBack = hiddenBack;
     self.backBtn.hidden = hiddenBack;
     self.backBtn.enabled = !hiddenBack;
+    self.closeBtn.hidden = hiddenBack;
+    self.closeBtn.enabled = !hiddenBack;
 }
 
 + (void)modificationUA:(NSString*)currentUserAgent {
@@ -1088,8 +1089,16 @@
     
 }
 
+//3.0.0以上
+- (void)startLoading {
+    
+}
+
 - (void)popOutController {
     
 }
 
+- (void)jumpToLogin {
+    
+}
 @end

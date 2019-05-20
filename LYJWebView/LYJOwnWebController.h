@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -24,21 +25,26 @@ typedef NS_ENUM(NSInteger, LYJWebViewType) {
 @property (nonatomic, copy) NSString* yw_sjmh_code;
 @property (nonatomic, copy) NSString* yw_face_key;
 @property (nonatomic, copy) NSString* yw_face_secret;
-@property (nonatomic, copy) NSString* yw_baidu_key;
 
 @property (nonatomic, assign) BOOL useCustomNav;
 @property (nonatomic, copy) NSString* titleStr;
 @property (nonatomic, copy) NSString* titleColor;
+@property (nonatomic, strong) UIView* navView;
 
 @property (nonatomic, assign) BOOL toRootVC;
 @property (nonatomic, assign) BOOL hiddenBack;
 @property (nonatomic, assign) LYJWebViewType type;
+
+@property (nonatomic, strong) WKWebView* webView;
 
 + (void)modificationUA:(NSString*)currentUserAgent;
 
 - (instancetype)initWithUrl:(NSString*)url;
 - (void)setBackImg:(UIImage*)backImg closeImg:(UIImage*)closeImg shareImg:(UIImage*)shareImg;
 
+- (void)finishLoad;
+- (void)popOutController;
+- (void)jumpToLogin;
 @end
 
 NS_ASSUME_NONNULL_END
