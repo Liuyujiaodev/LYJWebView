@@ -11,6 +11,8 @@
 
    <br/>
    <input type="button" name="" value="淘宝D" onclick="startSJMHTaobao()"/>
+   <input type="button" name="" value="FACEOCR" onclick="faceOCR()"/>
+
     <br/>
     <br/>
 
@@ -46,6 +48,9 @@
     }
     function autoStep() {
         window.webkit.messageHandlers.autoStep.postMessage({"startTime":"1547481600", "method":"uploadCMPStepResult"});
+    }
+    function faceOCR() {
+        window.webkit.messageHandlers.faceOCR.postMessage({"isFront" : "2", "method":"method"});
     }
     function autoStepResult(result) {
         console.log(result);

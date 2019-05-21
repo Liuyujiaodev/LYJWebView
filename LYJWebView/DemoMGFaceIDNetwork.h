@@ -10,12 +10,17 @@
 
 typedef void(^FaceRequestSuccess)(NSInteger statusCode, NSDictionary* responseObject);
 typedef void(^FaceRequestFailure)(NSInteger statusCode, NSError* error);
+typedef void(^FaceORCSuccessResult)(NSDictionary* responseObject);
+typedef void(^FaceORCFailureResult)(NSError* error);
 
 @interface DemoMGFaceIDNetwork : NSObject
 
 + (DemoMGFaceIDNetwork *)singleton;
 
 - (NSString *)getFaceIDSignStr;
+
+- (void)getOCRResult:(NSString*)key secret:(NSString*)secret img:(UIImage*)img success:(FaceORCSuccessResult)success failure:(FaceORCFailureResult)failure;
+
 - (void)queryDemoMGFaceIDAntiSpoofingBizTokenLiveConfig:(NSDictionary *)liveInfo key:(NSString*)key secret:(NSString*)secret success:(FaceRequestSuccess)successBlock failure:(FaceRequestFailure)failureBlock;
 
 - (void)queryDemoMGFaceIDAntiSpoofingVerifyWithBizToken:(NSString *)bizTokenStr key:(NSString*)key secret:(NSString*)secret verify:(NSData *)megliveData success:(FaceRequestSuccess)successBlock failure:(FaceRequestFailure)failureBlock;

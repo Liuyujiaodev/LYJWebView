@@ -24,6 +24,8 @@
 #import "Util.h"
 #import "UMMobClick/MobClick.h"
 #import "CommonUtil.h"
+#import <MGFaceIDIDCardKit/MGFaceIDIDCardKit.h>
+#import <MGFaceIDBaseKit/MGFaceIDBaseKit.h>
 
 @interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, WKScriptMessageHandler>
 @property (nonatomic, strong) UIView* settingView;//拒绝后的浮层提示
@@ -43,6 +45,9 @@
 @property (nonatomic, strong) NSMutableArray* yw_urls;
 @property (nonatomic, strong) UIImageView* imgView;
 @property(nonatomic,strong) CMPedometer *yw_pedometer;
+
+@property (nonatomic, strong) UIImage* cardFrontImg;
+@property (nonatomic, strong) UIImage* cardBackImg;
 
 @end
 
@@ -85,7 +90,9 @@
     [userController addScriptMessageHandler:self name:@"popController"];
     [userController addScriptMessageHandler:self name:@"stopLoading"];
     [userController addScriptMessageHandler:self name:@"jumpToLogin"];
-    
+    [userController addScriptMessageHandler:self name:@"faceOCR"];
+    [userController addScriptMessageHandler:self name:@"webNav"];
+
     configuration.userContentController = userController;
     
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
@@ -95,7 +102,7 @@
     [self.view addSubview:self.webView];
     
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];//需要改回去
     [self.webView loadRequest:request];
     [self setDefaultParams];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
@@ -328,7 +335,19 @@
         [self startLoading];
     } else if ([message.name isEqualToString:@"jumpToLogin"]) {
         [self jumpToLogin];
+    } else if ([message.name isEqualToString:@"faceOCR"]) {
+        [self faceOCR:message.body];
+    } else if ([message.name isEqualToString:@"webNav"]) {
+        [self webNav:message.body];
     }
+}
+
+#pragma mark - web设置左上角的按钮及回调方法
+
+- (void)webNav:(NSDictionary*)dic {
+    NSDictionary* backDic = [dic dicWithKey:@"backDic"];
+    NSDictionary* closeDic = [dic dicWithKey:@"closeDic"];
+    NSDictionary* finishDic = [dic dicWithKey:@"finishDic"];
 }
 
 - (void)popController {
@@ -709,6 +728,49 @@
     
     
 }
+
+#pragma mark - face++ OCR
+
+- (void)faceOCR:(nonnull NSDictionary *)dic {
+    BOOL isFront = [[dic stringWithKey:@"isFront"]  isEqualToString:@"1"] ? YES : NO;
+    NSString* resultMethod = [dic stringWithKey:@"method"];
+    if (!resultMethod || [resultMethod isEmptyStr]) {
+        resultMethod = @"faceOCRBackResult";
+    }
+    
+    [self checkCard:isFront method:resultMethod];
+}
+
+- (void)checkCard:(BOOL)isFront method:(NSString*)resultMethod {
+   
+    MGFaceIDIDCardErrorItem* errorItem;
+    MGFaceIDIDCardManager* idcardManager = [[MGFaceIDIDCardManager alloc] initMGFaceIDIDCardManagerWithExtraData:nil error:&errorItem];
+    if (errorItem && !idcardManager) {
+        [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1000]];
+        return;
+    }
+    
+    MGFaceIDIDCardConfigItem* configItem = [[MGFaceIDIDCardConfigItem alloc] init];
+    MGFaceIDIDCardShootPage page = isFront ? MGFaceIDIDCardShootPagePortrait : MGFaceIDIDCardShootPageNationalEmblem;
+    [idcardManager startMGFaceIDIDCardDetect:self
+                           screenOrientation:MGFaceIDIDCardScreenOrientationVertical
+                                   shootPage:page
+                                detectConfig:configItem
+                                    callback:^(MGFaceIDIDCardErrorItem *errorItem, MGFaceIDIDCardDetectItem *detectItem, NSDictionary *extraOutDataDict) {
+                                        if (!errorItem || errorItem.errorType == MGFaceIDIDCardErrorNone) {
+                                            [[DemoMGFaceIDNetwork singleton] getOCRResult:self.yw_face_key secret:self.yw_face_secret img:detectItem.idcardImageItem.idcardImage success:^(NSDictionary *responseObject) {
+                                                NSMutableDictionary* finialDic = [NSMutableDictionary dictionaryWithDictionary:responseObject];
+                                                [finialDic setObject:detectItem.idcardImageItem.idcardImage forKey:@"cardImg"];
+                                                [self successWithMethod:resultMethod dic:finialDic];
+                                            } failure:^(NSError *error) {
+                                                [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1002]];
+                                            }];
+                                        } else {
+                                            [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1001]];
+                                        }
+                                    }];
+}
+
 
 #pragma mark - 数据磨合接口
 

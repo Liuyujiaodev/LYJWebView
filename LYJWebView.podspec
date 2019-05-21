@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
 s.name     = "LYJWebView"
-s.version  = "1.2.0"
+s.version  = "1.3.0"
 s.license  = "MIT"
 s.summary  = "private web view"
 s.homepage = "https://github.com/Liuyujiaodev/LYJWebView.git"
@@ -25,7 +25,6 @@ s.requires_arc = true
 s.platform = :ios, '8.0'
 s.dependency "YJUtil"
 s.dependency "AFNetworking"
-s.dependency "BMKLocationKit"
 s.dependency "UtilStr"
 s.dependency "YJCategory"
 s.dependency "SVGKit"

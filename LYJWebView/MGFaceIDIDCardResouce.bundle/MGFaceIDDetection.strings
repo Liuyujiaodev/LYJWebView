@@ -1,0 +1,25 @@
+/* 
+  MGFaceDetection.strings
+  MGFaceDetection
+
+  Created by Megvii on 18/12/23.
+  Copyright © 2015年 megvii. All rights reserved.
+*/
+
+//  Key
+"key_space_mark"            =           "";
+"key_cancel"                =           "返回";
+
+//  Remind
+"remind_idcard_detect_portrait"                     =           "人像面拍摄";
+"remind_idcard_detect_emblem"                     =           "国徽面拍摄";
+"remind_idcard_border_alignment"                     =           "请保证身份证边缘与线框对齐";
+
+"remind_idcard_quality_failed_1"                     =           "未检测到身份证";
+"remind_idcard_quality_failed_2"                     =           "请对齐线框";
+"remind_idcard_quality_failed_3"                     =           "图像不清晰，请调整拍摄";
+"remind_idcard_quality_failed_4"                     =           "存在反光，请调整拍摄";
+"remind_idcard_quality_failed_5"                     =           "存在阴影，请调整拍摄";
+"remind_idcard_quality_failed_6"                     =           "请拍摄人像面";
+"remind_idcard_quality_failed_7"                     =           "请拍摄国徽面";
+"remind_idcard_quality_failed_8"                     =           "请摆正身份证";

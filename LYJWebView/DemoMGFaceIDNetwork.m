@@ -11,6 +11,7 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <math.h>
 #import <AFNetworking/AFNetworking.h>
+#import "Util.h"
 
 #define kMGFaceIDNetworkHost @"https://api.megvii.com"
 #define kMGFaceIDNetworkTimeout 30
@@ -29,6 +30,36 @@ static AFHTTPSessionManager* sessionManager = nil;
     return sing;
 }
 
+- (void)getOCRResult:(NSString*)key secret:(NSString*)secret img:(UIImage*)img success:(FaceORCSuccessResult)success failure:(FaceORCFailureResult)failure {
+    [sessionManager.requestSerializer setValue:@"multipart/form-data; charset=utf-8; boundary=__X_PAW_BOUNDARY__" forHTTPHeaderField:@"Content-Type"];
+    NSData *imageData = UIImageJPEGRepresentation(img, 1.0);
+    CGFloat sizeOriginKB = imageData.length / 1024.0;
+    
+    CGFloat resizeRate = 0.9;
+    while (sizeOriginKB > 2*1024 && resizeRate > 0.1) {
+        imageData = UIImageJPEGRepresentation(img, resizeRate);
+        sizeOriginKB = imageData.length / 1024.0;
+        resizeRate -= 0.1;
+    }
+    [imageData writeToFile:[Util filePathForDocument:@"img"] atomically:YES];
+                          
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] initWithDictionary:@{@"api_key" : key,
+                                                                                    @"api_secret" : secret
+                                                                                    }];
+    [sessionManager POST:[NSString stringWithFormat:@"%@/faceid/v3/ocridcard", kMGFaceIDNetworkHost]
+              parameters:params
+constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    NSData *data = [[NSData alloc] initWithContentsOfFile:[Util filePathForDocument:@"img"]];
+    [formData appendPartWithFileData :data name:@"image" fileName:@"928-1" mimeType:@"multipart/form-data"];
+}
+                progress:nil
+                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                     success(responseObject);
+                 }
+                 failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                     failure(error);
+                 }];
+}
 
 - (void)queryDemoMGFaceIDAntiSpoofingBizTokenLiveConfig:(NSDictionary *)liveInfo key:(NSString*)key secret:(NSString*)secret success:(FaceRequestSuccess)successBlock failure:(FaceRequestFailure)failureBlock {
     [sessionManager.requestSerializer setValue:@"multipart/form-data; charset=utf-8; boundary=__X_PAW_BOUNDARY__" forHTTPHeaderField:@"Content-Type"];
