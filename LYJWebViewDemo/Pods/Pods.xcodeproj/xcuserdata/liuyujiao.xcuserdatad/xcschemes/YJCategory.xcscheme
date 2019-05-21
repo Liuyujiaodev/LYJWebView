@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1020"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A7C4230A6C4B5694B56D4C72E1E106FE"
+               BlueprintIdentifier = "566DE43EADBDEF10025D323AE5EC1461"
+               BuildableName = "libYJCategory.a"
                BlueprintName = "YJCategory"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libYJCategory.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

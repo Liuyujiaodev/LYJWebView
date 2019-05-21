@@ -20,7 +20,6 @@
 #import "YWAuthUtil.h"
 #import <CoreLocation/CoreLocation.h>
 #import "CommonCategory.h"
-#import "SVGKImage.h"
 #import "Util.h"
 #import "UMMobClick/MobClick.h"
 #import "CommonUtil.h"
@@ -1074,9 +1073,6 @@
 
 - (void)setUseCustomNav:(BOOL)useCustomNav {
     _useCustomNav = useCustomNav;
-    if (!_useCustomNav) {
-        [self setBackImg:[SVGKImage imageNamed:@"back"].UIImage closeImg:[SVGKImage imageNamed:@"close"].UIImage shareImg:[SVGKImage imageNamed:@"share"].UIImage];
-    }
 }
 
 - (void)setTitleStr:(NSString *)titleStr {
