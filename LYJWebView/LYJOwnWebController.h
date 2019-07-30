@@ -34,6 +34,8 @@ typedef NS_ENUM(NSInteger, LYJWebViewType) {
 @property (nonatomic, assign) BOOL toRootVC;
 @property (nonatomic, assign) BOOL hiddenBack;
 @property (nonatomic, assign) LYJWebViewType type;
+@property (nonatomic, assign) BOOL isNewVersion;
+@property (nonatomic, assign) BOOL useWebTitle;
 
 @property (nonatomic, strong) WKWebView* webView;
 
@@ -45,6 +47,8 @@ typedef NS_ENUM(NSInteger, LYJWebViewType) {
 - (void)finishLoad;
 - (void)popOutController;
 - (void)jumpToLogin;
+- (void)webNav:(NSDictionary*)dic;
+
 @end
 
 NS_ASSUME_NONNULL_END

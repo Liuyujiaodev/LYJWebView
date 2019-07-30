@@ -25,8 +25,15 @@
 #import "CommonUtil.h"
 #import <MGFaceIDIDCardKit/MGFaceIDIDCardKit.h>
 #import <MGFaceIDBaseKit/MGFaceIDBaseKit.h>
+#import <AddressBookUI/ABPeoplePickerNavigationController.h>
+#import <AddressBook/ABPerson.h>
+#import <AddressBookUI/ABPersonViewController.h>
+#import <Contacts/Contacts.h>
+#import <ContactsUI/ContactsUI.h>
 
-@interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, WKScriptMessageHandler>
+#define kUSER_DEFAULT_SERVICE_CALL  @"service_call"
+
+@interface LYJOwnWebController () <shujumoheDelegate, WKUIDelegate, WKNavigationDelegate, CLLocationManagerDelegate, WKScriptMessageHandler, ABPeoplePickerNavigationControllerDelegate, CNContactPickerDelegate>
 @property (nonatomic, strong) UIView* settingView;//拒绝后的浮层提示
 @property (nonatomic, strong) CLLocationManager* locationMag;
 @property (nonatomic, strong) UIButton* backBtn;
@@ -40,6 +47,7 @@
 @property (nonatomic, copy) NSString* locationResultMethod;
 @property (nonatomic, copy) NSString* sjmhTaoBaoResultMethod;
 @property (nonatomic, copy) NSString* autoSetpResultMethod;
+@property (nonatomic, copy) NSString* contactPickerResultMethod;
 
 @property (nonatomic, strong) NSMutableArray* yw_urls;
 @property (nonatomic, strong) UIImageView* imgView;
@@ -47,6 +55,9 @@
 
 @property (nonatomic, strong) UIImage* cardFrontImg;
 @property (nonatomic, strong) UIImage* cardBackImg;
+@property (nonatomic, strong) NSString* settingMethod;
+@property (nonatomic, strong) UIView* shandowView;
+@property (nonatomic, assign) BOOL isClickServiceCall;
 
 @end
 
@@ -91,7 +102,16 @@
     [userController addScriptMessageHandler:self name:@"jumpToLogin"];
     [userController addScriptMessageHandler:self name:@"faceOCR"];
     [userController addScriptMessageHandler:self name:@"webNav"];
-
+    [userController addScriptMessageHandler:self name:@"actionBack"];
+    [userController addScriptMessageHandler:self name:@"actionReload"];
+    [userController addScriptMessageHandler:self name:@"actionAsk"];
+    [userController addScriptMessageHandler:self name:@"actionFinish"];
+    [userController addScriptMessageHandler:self name:@"setTitleLabel"];
+    [userController addScriptMessageHandler:self name:@"showNewSettingView"];
+    [userController addScriptMessageHandler:self name:@"backWebHome"];
+    [userController addScriptMessageHandler:self name:@"contactPicker"];
+    [userController addScriptMessageHandler:self name:@"openInSafari"];
+    
     configuration.userContentController = userController;
     
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
@@ -101,7 +121,7 @@
     [self.view addSubview:self.webView];
     
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];//需要改回去
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];//需要改回去
     [self.webView loadRequest:request];
     [self setDefaultParams];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
@@ -139,10 +159,14 @@
 
 - (void)setBackImg:(UIImage*)backImg closeImg:(UIImage*)closeImg shareImg:(UIImage*)shareImg {
     [self.backBtn setImage:backImg forState:UIControlStateNormal];
-    self.backBtn.frame = CGRectMake(20, APP_STATUS_HEIGHT + (APP_NAV_BAR_HEIGHT - backImg.size.height) / 2, backImg.size.width, backImg.size.height);
-    [self.closeBtn setImage:closeImg forState:UIControlStateNormal];
-    self.closeBtn.frame = CGRectMake(self.backBtn.right + 20, APP_STATUS_HEIGHT + (APP_NAV_BAR_HEIGHT - closeImg.size.height) / 2, closeImg.size.width, closeImg.size.height);
-    [self.shareBtn setImage:shareImg forState:UIControlStateNormal];
+    CGFloat height = kDevice_Is_iPhoneX ? 88 : 64;
+    self.backBtn.frame = CGRectMake(20, height- 53 + (53 - backImg.size.height)/2, backImg.size.width, backImg.size.height);
+    [self.backBtn setEnlargeEdgeWithTop:20 right:15 bottom:20 left:20];
+    self.closeBtn.frame = CGRectMake(self.backBtn.right + 30, height- 53 + (53 - closeImg.size.height)/2, closeImg.size.width, closeImg.size.height);
+    [self.closeBtn setEnlargeEdgeWithTop:20 right:20 bottom:20 left:15];
+    
+    self.shareBtn.frame = CGRectMake(APPWidth - backImg.size.width - 20, height- 53 + (53 - shareImg.size.height)/2, shareImg.size.width, shareImg.size.height);
+    [self.shareBtn setEnlargeEdgeWithTop:20 right:20 bottom:20 left:20];
 }
 
 - (void)setNavTitle {
@@ -249,7 +273,72 @@
 }
 
 #pragma mark - WKNavigationDelegate
-#pragma mark - 截取当前加载的URL 为每一个请求添加token
+#pragma mark - 截取tel标签打电话
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    
+    NSURL *URL = navigationAction.request.URL;
+    NSString *scheme = [URL scheme];
+    if ([scheme isEqualToString:@"tel"]) {
+        NSString *resourceSpecifier = [URL resourceSpecifier];
+        NSString *callPhone = [NSString stringWithFormat:@"telprompt://%@", resourceSpecifier];
+        /// 防止iOS 10及其之后，拨打电话系统弹出框延迟出现
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:callPhone]];
+        decisionHandler(WKNavigationActionPolicyCancel);
+        
+        return;
+    }
+    
+    WKNavigationActionPolicy policy =WKNavigationActionPolicyAllow;
+    NSSet *validSchemes = [NSSet setWithArray:@[@"http", @"https"]];
+    if(![validSchemes containsObject:navigationAction.request.URL.scheme]) {
+          [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        policy =WKNavigationActionPolicyCancel;
+    } else if ([[navigationAction.request.URL host] isEqualToString:@"itunes.apple.com"] &&[[UIApplication sharedApplication] openURL:navigationAction.request.URL]) {
+        policy =WKNavigationActionPolicyCancel;
+    }
+    if (navigationAction.targetFrame == nil) {
+          [webView loadRequest:navigationAction.request];
+    }
+        decisionHandler(policy);
+    
+     
+    //    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
+    // js 里面的alert实现，如果不实现，网页的alert函数无效
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {
+                                                          completionHandler();
+                                                      }]];
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
+    
+}
+
+- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler {
+    //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          completionHandler(YES);
+                                                      }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action){
+                                                          completionHandler(NO);
+                                                      }]];
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
+    
+}
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
     [self setToken];
@@ -258,11 +347,14 @@
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     [self finishLoad];
+    if (self.useWebTitle) {
+        self.titleLabel.text =  webView.title;//获取当前页面的title
+    }
+    
     NSString *currentURL = webView.URL.absoluteString;
-    DLog(@"=====fini=====%@", currentURL);
-    if (webView.URL.hasDirectoryPath) {
+    if (![currentURL isEqualToString:_url]) {
         _currentUrl = currentURL;
-        if (self.type != LYJWebViewTypeZDGJ) {
+        if (self.type != LYJWebViewTypeZDGJ && !self.isNewVersion) {
             self.backBtn.hidden = NO;
             self.backBtn.enabled = YES;
             self.closeBtn.hidden = NO;
@@ -281,6 +373,9 @@
     }
 }
 
+- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
+    
+}
 - (void)showLeftBackBtn {
     self.backBtn.hidden = NO;
     self.backBtn.enabled = YES;
@@ -290,7 +385,7 @@
 
 #pragma mark - JS调用的OC回调方法
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
-    
+    DLog(@"========message:%@", message.body);
     if ([message.name isEqualToString:@"startSJMHTaobao"]) {
         [self startSJMHTaobao:message.body];
     } else if ([message.name isEqualToString:@"uploadLocation"]) {
@@ -338,6 +433,24 @@
         [self faceOCR:message.body];
     } else if ([message.name isEqualToString:@"webNav"]) {
         [self webNav:message.body];
+    } else if ([message.name isEqualToString:@"actionBack"]) {
+        [self actionBack];
+    } else if ([message.name isEqualToString:@"actionReload"]) {
+        [self actionReload];
+    } else if ([message.name isEqualToString:@"actionAsk"]) {
+        [self actionAsk];
+    } else if ([message.name isEqualToString:@"actionFinish"]) {
+        [self actionFinish];
+    } else if ([message.name isEqualToString:@"setTitleLabel"]) {
+        [self setTitleStr:message.body];
+    } else if ([message.name isEqualToString:@"showNewSettingView"]) {
+        [self showNewSettingView:message.body];
+    } else if ([message.name isEqualToString:@"backWebHome"]) {
+        [self backWebHome];
+    } else if ([message.name isEqualToString:@"contactPicker"]) {
+        [self contactPicker:message.body];
+    } else if ([message.name isEqualToString:@"openInSafari"]) {
+        [self openInSafari:message.body];
     }
 }
 
@@ -347,6 +460,125 @@
     NSDictionary* backDic = [dic dicWithKey:@"backDic"];
     NSDictionary* closeDic = [dic dicWithKey:@"closeDic"];
     NSDictionary* finishDic = [dic dicWithKey:@"finishDic"];
+    
+    UIImage* backImg = [self getImg:[backDic stringWithKey:@"img"]];
+    NSString* action = [backDic stringWithKey:@"action"];
+    self.backBtn.hidden = [[backDic stringWithKey:@"isHidden"] isEqualToString:@"1"] ? YES : NO;
+    [self.backBtn setImage:backImg forState:UIControlStateNormal];
+    self.backBtn.tag = 0;
+    [self addAction:self.backBtn dic:backDic];
+    
+    NSString* closeAction = [backDic stringWithKey:@"action"];
+    UIImage* closeImg = [self getImg:[closeDic objectForKey:@"img"]];
+    self.closeBtn.hidden = [[closeDic stringWithKey:@"isHidden"] isEqualToString:@"1"] ? YES : NO;
+    [self.closeBtn setImage:closeImg forState:UIControlStateNormal];
+    
+    self.closeBtn.tag = 1;
+    [self addAction:self.closeBtn dic:closeDic];
+    
+    UIImage* shareImg = [self getImg:[finishDic objectForKey:@"img"]];
+    NSString* shareAction = [finishDic stringWithKey:@"action"];
+    self.shareBtn.hidden = [[finishDic stringWithKey:@"isHidden"] isEqualToString:@"1"] ? YES : NO;
+    [self.shareBtn setImage:shareImg forState:UIControlStateNormal];
+    self.shareBtn.tag = 2;
+    [self addAction:self.shareBtn dic:finishDic];
+    
+    [self setBackImg:backImg closeImg:closeImg shareImg:shareImg];
+    
+    NSString* titleStr = [backDic stringWithKey:@"webTitle"];
+    if (![titleStr isEmptyStr]) {
+        self.titleLabel.text = titleStr;
+    }
+    
+    NSString* navColor = [backDic stringWithKey:@"navColor"];
+    if (![navColor isEmptyStr]) {
+        self.navView.backgroundColor = [UIColor colorWithHexString:navColor];
+    }
+}
+
+- (void)addAction:(UIButton*)btn dic:(NSDictionary*)dic {
+    [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+    if ([[dic stringWithKey:@"appFun"] isEqualToString:@"0"]) {
+        [btn addTarget:self action:@selector(navBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+    } else if ([[dic stringWithKey:@"appFun"] isEqualToString:@"2"]) {
+        [btn addTarget:self action:@selector(backWebHome) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        if (btn.tag == 0) {
+            [btn addTarget:self action:@selector(actionBack) forControlEvents:UIControlEventTouchUpInside];
+        } else if (btn.tag == 1) {
+            [btn addTarget:self action:@selector(actionFinish) forControlEvents:UIControlEventTouchUpInside];
+        } else {
+            [btn addTarget:self action:@selector(actionAsk) forControlEvents:UIControlEventTouchUpInside];
+        }
+    }
+}
+
+- (UIImage*)getImg:(NSString*)str {
+    NSInteger index = str.integerValue;
+    if (index == 1) {
+        return [UIImage imageNamed:@"icon_back"];
+    } else if (index == 2) {
+        return [UIImage imageNamed:@"icon_closed"];
+    } else if (index == 3) {
+        return [UIImage imageNamed:@"icon_consultative"];
+    } else if (index == 4) {
+        return [UIImage imageNamed:@"icon_completed"];
+    }
+    return [UIImage imageNamed:@""];
+}
+
+#pragma mark -
+- (void)navBtnAction:(UIButton*)btn {
+    NSInteger index = btn.tag;
+    NSString* method;
+    if (index == 0) {
+        method = @"backDic";
+    } else if (index == 1) {
+        method = @"closeDic";
+    } else if (index == 2) {
+        method = @"finishDic";
+    }
+    [self successWithMethod:method dic:nil];
+}
+
+#pragma mark - 新的app使用
+
+- (void)actionBack {
+    if (self.webView.canGoBack) {
+        [self.webView goBack];
+    } else {
+        [self finishLoad];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (void)actionReload {
+    [self.webView reload];
+}
+
+- (void)actionFinish {
+    [self finishLoad];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)backWebHome {
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];//需要改回去
+    [self.webView loadRequest:request];
+}
+
+- (void)actionAsk {
+    if (self.isClickServiceCall) {
+        return;
+    }
+    self.isClickServiceCall = YES;
+    NSMutableString * call = [[NSUserDefaults standardUserDefaults] objectForKey:kUSER_DEFAULT_SERVICE_CALL];
+    if (call && ![call isEmptyStr]) {
+        NSMutableString *str=[[NSMutableString alloc] initWithFormat:@"telprompt://%@",call];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.isClickServiceCall = NO;
+    });
 }
 
 - (void)popController {
@@ -552,6 +784,166 @@
         }];
     }
 }
+
+#pragma mark -选择通讯录联系人
+- (void)contactPicker:(NSString*)resultMethod {
+    if (!resultMethod || [resultMethod isEmptyStr]) {
+        resultMethod = @"contactPickerResult";
+    }
+    self.contactPickerResultMethod = resultMethod;
+    if ([YWAuthUtil getContactStatus] == YLAuthUtilStatusAuthed) {
+        [self pickerContact];
+    }  else if ([YWAuthUtil getContactStatus] == YLAuthUtilStatusDefined){
+        [self failuerWithMethod:self.contactPickerResultMethod code:[NSNumber numberWithInteger:1000]];
+    } else {
+        [YWAuthUtil reqeustAuth:^(BOOL granted) {
+            if (granted) {
+                [self pickerContact];
+            } else {
+                [self failuerWithMethod:self.contactPickerResultMethod code:[NSNumber numberWithInteger:1000]];
+            }
+            
+        }];
+    }
+}
+
+- (void)pickerContact {
+    if (iSiOS9) {
+        CNContactPickerViewController *contact = [[CNContactPickerViewController alloc]init];
+        contact.delegate = self;
+        contact.predicateForSelectionOfContact = [NSPredicate predicateWithValue:false];
+        [self presentViewController:contact animated:YES completion:nil];
+    } else {
+        ABPeoplePickerNavigationController *nav = [[ABPeoplePickerNavigationController alloc] init];
+        nav.peoplePickerDelegate = self;
+        nav.predicateForSelectionOfPerson = [NSPredicate predicateWithValue:false];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+//实现代理方法
+
+#pragma mark ABPeoplePickerNavigationControllerDelegate
+
+//取消选择
+
+- (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker
+
+{
+    [self failuerWithMethod:self.contactPickerResultMethod code:[NSNumber numberWithInteger:1001]];//用户取消
+    [peoplePicker dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)peoplePickerNavigationController:(ABPeoplePickerNavigationController*)peoplePicker didSelectPerson:(ABRecordRef)person
+
+{
+    CFTypeRef firstNameRef = ABRecordCopyValue(person, kABPersonFirstNameProperty);
+    CFTypeRef lastNameRef = ABRecordCopyValue(person, kABPersonLastNameProperty);
+    CFTypeRef companyRef = ABRecordCopyValue(person, kABPersonOrganizationProperty);
+    
+    NSString* firstName = (firstNameRef == nil) ? @"" : (__bridge NSString*)firstNameRef;
+    NSString* lastName = (lastNameRef == nil) ? @"" : (__bridge NSString*)lastNameRef;
+    NSString* companyName = (companyRef == nil) ? @"" :(__bridge NSString*)companyRef;
+    
+    ABMutableMultiValueRef multIPhone = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    multIPhone = ABRecordCopyValue(person, kABPersonPhoneProperty);
+    
+    NSMutableSet* iphones = [NSMutableSet set];
+    for (int j = 0; j < ABMultiValueGetCount(multIPhone); j++) {
+        CFStringRef numberRef = ABMultiValueCopyValueAtIndex(multIPhone, j);
+        CFStringRef label = ABMultiValueCopyLabelAtIndex(multIPhone, j);
+        
+        NSString *moblie = [NSString stringWithFormat:@"%@", numberRef];
+        NSString *tagLabel = [NSString stringWithFormat:@"%@", label];
+        
+        [iphones addObject:[NSDictionary dictionaryWithObjectsAndKeys:moblie,@"phone",tagLabel,@"tagLabel", nil]];
+    }
+    
+    for (NSDictionary* iphoneDic in iphones) {
+        NSString* iphone = [iphoneDic objectForKey:@"phone"];
+        NSString* tag = [self tagStr:[iphoneDic objectForKey:@"tagLabel"]];
+        
+        NSString* phoneNumber = [[[iphone stringByReplacingOccurrencesOfString:@"-" withString:@""] stringByReplacingOccurrencesOfString:@" (" withString:@""] stringByReplacingOccurrencesOfString:@") " withString:@""];
+        phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"(" withString:@""];
+        phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+        phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@")" withString:@""];
+        
+        NSString* name = [NSString stringWithFormat:@"%@%@", lastName, firstName];
+        if ([name isEqualToString:@""]) {
+            if ([companyName isEqualToString:@""]) {
+                name = phoneNumber;
+            } else if (![companyName isEqualToString:@""]) {
+                name = companyName;
+            }
+        }
+        NSDictionary* itemDic = [NSDictionary dictionaryWithObjectsAndKeys:name, @"displayName", phoneNumber, @"iphone", tag, @"tagLabel", nil];
+        [self successWithMethod:self.contactPickerResultMethod dic:[NSDictionary dictionaryWithObject:itemDic forKey:@"contact"]];
+    }
+    
+    [peoplePicker dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+#pragma mark  CNContactPickerDelegate
+
+//取消
+
+- (void)contactPickerDidCancel:(CNContactPickerViewController *)picker
+
+{
+    [self failuerWithMethod:self.contactPickerResultMethod code:[NSNumber numberWithInteger:1001]];//用户取消
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(CNContactProperty *)contactProperty {
+    CNContact * contact = contactProperty.contact;
+    NSString* firstName = contact.givenName;
+    NSString* lastName = contact.familyName;
+    NSArray* phoneNumbers = contact.phoneNumbers;
+    for (CNLabeledValue *labeledValue in phoneNumbers) {
+        if ([labeledValue.identifier isEqualToString:contactProperty.identifier]) {
+            // 2.1.获取电话号码的KEY
+            NSString *tag = [self tagStr:labeledValue.label];
+            // 2.2.获取电话号码
+            CNPhoneNumber *mobile = labeledValue.value;
+            NSString *phoneNumber = mobile.stringValue;
+            
+            NSString* name = [NSString stringWithFormat:@"%@%@", lastName, firstName];
+            
+            NSDictionary* itemDic = [NSDictionary dictionaryWithObjectsAndKeys:name, @"displayName", phoneNumber, @"iphone", tag, @"tagLabel", nil];
+            [self successWithMethod:self.contactPickerResultMethod dic:[NSDictionary dictionaryWithObject:itemDic forKey:@"contact"]];
+        }
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+//选中与取消选中时调用的方法
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(CNContact *)contact
+
+{
+    NSString* firstName = contact.givenName;
+    NSString* lastName = contact.familyName;
+    NSArray* phoneNumbers = contact.phoneNumbers;
+    for (CNLabeledValue *labeledValue in phoneNumbers) {
+        // 2.1.获取电话号码的KEY
+        NSString *tag = [self tagStr:labeledValue.label];
+        // 2.2.获取电话号码
+        CNPhoneNumber *mobile = labeledValue.value;
+        NSString *phoneNumber = mobile.stringValue;
+        
+        NSString* name = [NSString stringWithFormat:@"%@%@", lastName, firstName];
+        
+        NSDictionary* itemDic = [NSDictionary dictionaryWithObjectsAndKeys:name, @"displayName", phoneNumber, @"iphone", tag, @"tagLabel", nil];
+        [self successWithMethod:self.contactPickerResultMethod dic:[NSDictionary dictionaryWithObject:itemDic forKey:@"contact"]];
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
 //检查麦克风权限
 - (void) checkAudioStatus:(NSString*)resultMethod {
     if (!resultMethod || [resultMethod isEmptyStr]) {
@@ -652,6 +1044,7 @@
 }
 
 
+
 #pragma mark - face++人脸识别
 
 - (void)face:(NSString*)name Number:(NSString*)number Method:(nonnull NSString *)resultMethod {
@@ -731,17 +1124,36 @@
 #pragma mark - face++ OCR
 
 - (void)faceOCR:(nonnull NSDictionary *)dic {
-    BOOL isFront = [[dic stringWithKey:@"isFront"]  isEqualToString:@"1"] ? YES : NO;
     NSString* resultMethod = [dic stringWithKey:@"method"];
     if (!resultMethod || [resultMethod isEmptyStr]) {
         resultMethod = @"faceOCRBackResult";
     }
     
-    [self checkCard:isFront method:resultMethod];
+    AVAuthorizationStatus authStatus =  [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (authStatus == AVAuthorizationStatusNotDetermined) {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            if (granted) {
+                BOOL isFront = [[dic stringWithKey:@"isFront"]  isEqualToString:@"1"] ? YES : NO;
+                
+                [self checkCard:isFront method:resultMethod];
+            } else {
+                [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1001]];
+            }
+        }];
+    } else if (authStatus == AVAuthorizationStatusAuthorized) {
+        
+        BOOL isFront = [[dic stringWithKey:@"isFront"]  isEqualToString:@"1"] ? YES : NO;
+        
+        [self checkCard:isFront method:resultMethod];
+    } else {
+        [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1001]];
+    }
+    
+    
 }
 
 - (void)checkCard:(BOOL)isFront method:(NSString*)resultMethod {
-   
+    
     MGFaceIDIDCardErrorItem* errorItem;
     MGFaceIDIDCardManager* idcardManager = [[MGFaceIDIDCardManager alloc] initMGFaceIDIDCardManagerWithExtraData:nil error:&errorItem];
     if (errorItem && !idcardManager) {
@@ -758,14 +1170,18 @@
                                     callback:^(MGFaceIDIDCardErrorItem *errorItem, MGFaceIDIDCardDetectItem *detectItem, NSDictionary *extraOutDataDict) {
                                         if (!errorItem || errorItem.errorType == MGFaceIDIDCardErrorNone) {
                                             [[DemoMGFaceIDNetwork singleton] getOCRResult:self.yw_face_key secret:self.yw_face_secret img:detectItem.idcardImageItem.idcardImage success:^(NSDictionary *responseObject) {
-                                                NSMutableDictionary* finialDic = [NSMutableDictionary dictionaryWithDictionary:responseObject];
-                                                [finialDic setObject:detectItem.idcardImageItem.idcardImage forKey:@"cardImg"];
+                                                NSMutableDictionary* finialDic = [NSMutableDictionary dictionary];
+                                                NSData* imgData = UIImageJPEGRepresentation(detectItem.idcardImageItem.idcardImage, 0.5);
+                                                [imgData writeToFile:[Util filePathForDocument:@"faceImg"] atomically:YES];
+                                                NSData *fileData = [[NSData alloc] initWithContentsOfFile:[Util filePathForDocument:@"faceImg"]];
+                                                [finialDic setObject:[Util getJsonWith:responseObject] forKey:@"faceOCR"];
+                                                [finialDic setObject:[self imageToString:detectItem.idcardImageItem.idcardImage ] forKey:@"cardImg"];
                                                 [self successWithMethod:resultMethod dic:finialDic];
                                             } failure:^(NSError *error) {
-                                                [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1002]];
+                                                [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1003]];
                                             }];
                                         } else {
-                                            [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1001]];
+                                            [self failuerWithMethod:resultMethod code:[NSNumber numberWithInteger:1002]];
                                         }
                                     }];
 }
@@ -812,6 +1228,11 @@
     }
 }
 
+#pragma mark - safari打开
+- (void)openInSafari:(NSString*)url {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
 #pragma mark - 公共成功方法
 - (void)successWithMethod:(NSString*)method dic:(NSDictionary*)dic {
     
@@ -820,7 +1241,7 @@
         [params setObject:[NSNumber numberWithInt:1] forKey:@"status"];
         NSString* str = [Util getJsonWith:params];
         //        webJS.uploadLocationResult(1);
-        DLog(@"=====js==success====%@", params);
+        DLog(@"=====js==success==method:%@==%@", method, params);
         NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)", method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
         }];
@@ -836,7 +1257,7 @@
         [params setObject:[NSNumber numberWithInt:0] forKey:@"status"];
         [params setObject:code forKey:@"code"];
         NSString* str = [Util getJsonWith:params];
-        DLog(@"=====js==failuer====%@", params);
+        DLog(@"=====js==failuer====method:%@==%@", method, params);
         
         NSString *alertJS= [NSString stringWithFormat:@"webJS.%@(%@)",method, str];//准备执行的js代码
         [self.webView evaluateJavaScript:alertJS completionHandler:^(id _Nullable item, NSError * _Nullable error) {
@@ -848,34 +1269,40 @@
 
 #pragma mark - private
 - (void)setContactAuth {
-    [self showSettingView:@"请允许访问通讯录"];
+    [self showSettingView:@"请允许访问通讯录权限"];
 }
 
 - (void)setLocationAuth {
-    [self showSettingView:@"请允许访问定位"];
+    [self showSettingView:@"请允许访问定位权限"];
 }
 
 - (void)setAuthPhoto {
-    [self showSettingView:@"请允许访问相机"];
+    [self showSettingView:@"请允许访问相机权限"];
 }
 
+- (void)showNewSettingView:(NSDictionary*)dic {
+    [self showSettingView:[dic stringWithKey:@"content"]];
+    self.settingMethod = [dic stringWithKey:@"method"];
+}
+
+
 - (void)showSettingView:(NSString*)str {
-    UIView* shandowView = [[UIView alloc] initWithFrame:CGRectMake((APPWidth - 280)/2, (self.view.height - 247)/2, 280, 247)];
-    [self.view addSubview:shandowView];
+    [self.shandowView removeFromSuperview];
+    self.shandowView = nil;
+    self.shandowView = [[UIView alloc] initWithFrame:CGRectMake((APPWidth - 280)/2, (self.view.height - 247)/2, 280, 247)];
+    [self.view addSubview:self.shandowView];
     
-    shandowView.layer.shadowColor = RGBAlphaColor(0, 0, 0, 0.64).CGColor;
-    shandowView.layer.shadowOffset = CGSizeMake(0,0);
-    shandowView.layer.shadowOpacity = 0.5;
+    self.shandowView.layer.shadowColor = RGBAlphaColor(0, 0, 0, 0.64).CGColor;
+    self.shandowView.layer.shadowOffset = CGSizeMake(0,0);
+    self.shandowView.layer.shadowOpacity = 0.5;
     // 阴影半径，默认3
-    shandowView.layer.shadowRadius = 5;
+    self.shandowView.layer.shadowRadius = 5;
     
     self.settingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 247)];
     self.settingView.backgroundColor = RGBColor(249, 250, 252);
     self.settingView.layer.cornerRadius = 10;
     self.settingView.layer.masksToBounds = YES;
-    [shandowView addSubview:self.settingView];
-    
-    
+    [self.shandowView addSubview:self.settingView];
     
     UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.settingView.width, 48)];
     titleLabel.text = str;
@@ -910,12 +1337,17 @@
 }
 
 - (void)cancelBtnAction {
-    [self.settingView removeFromSuperview];
+    [self.shandowView removeFromSuperview];
+    if (self.settingMethod) {
+        [self successWithMethod:self.settingMethod dic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:0] forKey:@"action"]];
+    }
 }
 
 - (void)jumpToSettingPage {
-    [self.settingView removeFromSuperview];
-    
+    [self.shandowView removeFromSuperview];
+    if (self.settingMethod) {
+        [self successWithMethod:self.settingMethod dic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:1] forKey:@"action"]];
+    }
     NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
     if([[UIApplication sharedApplication] canOpenURL:url]) {
         NSURL*url =[NSURL URLWithString:UIApplicationOpenSettingsURLString];
@@ -1021,7 +1453,7 @@
     
     if ([keyPath isEqualToString:@"canGoBack"]) {
         if (self.webView.canGoBack) {
-            if (self.type != LYJWebViewTypeZDGJ) {
+            if (self.type != LYJWebViewTypeZDGJ && !self.isNewVersion) {
                 self.backBtn.hidden = NO;
                 self.backBtn.enabled = YES;
                 self.closeBtn.hidden = NO;
@@ -1029,7 +1461,7 @@
             }
             
         } else {
-            if (self.type != LYJWebViewTypeZDGJ) {
+            if (self.type != LYJWebViewTypeZDGJ  && !self.isNewVersion) {
                 self.backBtn.hidden = YES;
                 self.backBtn.enabled = NO;
                 self.closeBtn.hidden = YES;
@@ -1086,10 +1518,13 @@
 }
 - (void)setHiddenBack:(BOOL)hiddenBack {
     _hiddenBack = hiddenBack;
-    self.backBtn.hidden = hiddenBack;
-    self.backBtn.enabled = !hiddenBack;
-    self.closeBtn.hidden = hiddenBack;
-    self.closeBtn.enabled = !hiddenBack;
+    if (!self.isNewVersion) {
+        self.backBtn.hidden = hiddenBack;
+        self.backBtn.enabled = !hiddenBack;
+        self.closeBtn.hidden = hiddenBack;
+        self.closeBtn.enabled = !hiddenBack;
+    }
+    
 }
 
 + (void)modificationUA:(NSString*)currentUserAgent {
@@ -1158,5 +1593,50 @@
 
 - (void)jumpToLogin {
     
+}
+
+#pragma mark - image base64
+- (NSString *)imageToString:(UIImage *)image {
+    NSData *imagedata = UIImagePNGRepresentation(image);
+    NSString *image64 = [imagedata base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithCarriageReturn];
+    return image64;
+}
+
+-(NSString*)tagStr:(NSString*)tag {
+    if ([tag containsString:@"HomeFAX"]) {
+        return @"家庭传真";
+    }
+    
+    if ([tag containsString:@"WorkFAX"]) {
+        return @"工作传真";
+    }
+    
+    if ([tag containsString:@"Work"]) {
+        return @"工作";
+    }
+    
+    if ([tag containsString:@"Home"]) {
+        return @"家庭";
+    }
+    
+    if ([tag containsString:@"iPhone"]) {
+        return @"iPhone";
+    }
+    if ([tag containsString:@"Mobile"]) {
+        return @"手机";
+    }
+    
+    if ([tag containsString:@"Main"]) {
+        return @"主要";
+    }
+    
+    if ([tag containsString:@"Pager"]) {
+        return @"传呼机";
+    }
+    if ([tag containsString:@"Other"]) {
+        return @"其他";
+    }
+    
+    return @"其他";
 }
 @end

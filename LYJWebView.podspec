@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
 s.name     = "LYJWebView"
-s.version  = "1.4.0"
+s.version  = "1.6.0"
 s.license  = "MIT"
 s.summary  = "private web view"
 s.homepage = "https://github.com/Liuyujiaodev/LYJWebView.git"
@@ -27,7 +27,6 @@ s.dependency "YJUtil"
 s.dependency "AFNetworking"
 s.dependency "UtilStr"
 s.dependency "YJCategory"
-s.dependency "SVGKit"
 s.dependency "UMengAnalytics-NO-IDFA"
 s.resource = "LYJWebView/**/*.bundle"
 end
