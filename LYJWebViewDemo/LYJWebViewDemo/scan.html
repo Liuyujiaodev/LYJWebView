@@ -33,6 +33,7 @@
     <input type="button" name="" value="不请求健康权限上传步数" onclick="uploadCMPSetp()"/>
     <input type="button" name="" value="自动记步数" onclick="autoStep()"/>
     <input type="button" name="" value="停止自动计步" onclick="stopAutoStep()"/>
+    <input type="button" name="" value="新颜运营商" onclick="xyYunYingShang()"/>
 
 <br/>
 
@@ -120,6 +121,11 @@
     //--------上传步数------------
     function uploadSetp() {
         window.webkit.messageHandlers.uploadStep.postMessage({"startTime":"1547481600", "endTime":"1547520334", "method":"uploadSetpResult"});
+    }
+
+    //--------上传步数------------
+    function xyYunYingShang() {
+        window.webkit.messageHandlers.xyYunYingShang.postMessage('');
     }
 
 function uploadSetpResult(result) {

@@ -38,6 +38,9 @@
 		09740E8522924C5700C96F37 /* MGFaceIDIDCardKernelKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09740E8322924C5600C96F37 /* MGFaceIDIDCardKernelKit.framework */; };
 		09740E8722924C7500C96F37 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09740E8622924C7500C96F37 /* AVFoundation.framework */; };
 		09740E8922924C8C00C96F37 /* MGFaceIDIDCardResouce.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 09740E8822924C8C00C96F37 /* MGFaceIDIDCardResouce.bundle */; };
+		09B11D8C22F0283500F7AD59 /* XYCrawler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B11D8B22F0283500F7AD59 /* XYCrawler.a */; };
+		09B11D8F22F0284900F7AD59 /* XinyanResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 09B11D8E22F0284900F7AD59 /* XinyanResource.bundle */; };
+		09B11D9122F03C3700F7AD59 /* loginPrivate.html in Resources */ = {isa = PBXBuildFile; fileRef = 09B11D9022F03C3600F7AD59 /* loginPrivate.html */; };
 		686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -85,6 +88,10 @@
 		09740E8322924C5600C96F37 /* MGFaceIDIDCardKernelKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MGFaceIDIDCardKernelKit.framework; sourceTree = "<group>"; };
 		09740E8622924C7500C96F37 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		09740E8822924C8C00C96F37 /* MGFaceIDIDCardResouce.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MGFaceIDIDCardResouce.bundle; sourceTree = "<group>"; };
+		09B11D8B22F0283500F7AD59 /* XYCrawler.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = XYCrawler.a; sourceTree = "<group>"; };
+		09B11D8D22F0284000F7AD59 /* XYCrawlerSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCrawlerSDK.h; sourceTree = "<group>"; };
+		09B11D8E22F0284900F7AD59 /* XinyanResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = XinyanResource.bundle; sourceTree = "<group>"; };
+		09B11D9022F03C3600F7AD59 /* loginPrivate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = loginPrivate.html; sourceTree = "<group>"; };
 		2B33384881F6C95A31538C2C /* libPods-LYJWebViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LYJWebViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32A44810EBD9AA21F6FC4F77 /* Pods-LYJWebViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		99879AEEC65E8F8BE23E66EF /* Pods-LYJWebViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYJWebViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYJWebViewDemo/Pods-LYJWebViewDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,6 +114,7 @@
 				092C9456222CBF470054DCC5 /* libshujumoheSDK.a in Frameworks */,
 				092C9455222CBF470054DCC5 /* MGFaceIDLiveDetect.framework in Frameworks */,
 				686A9EAF0D7BA0E592CB47C2 /* libPods-LYJWebViewDemo.a in Frameworks */,
+				09B11D8C22F0283500F7AD59 /* XYCrawler.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +142,7 @@
 		092C942D222946540054DCC5 /* LYJWebViewDemo */ = {
 			isa = PBXGroup;
 			children = (
+				09B11D9022F03C3600F7AD59 /* loginPrivate.html */,
 				092C945D222E710C0054DCC5 /* back.svg */,
 				092C945E222E710C0054DCC5 /* close.svg */,
 				092C9460222E710D0054DCC5 /* scan.html */,
@@ -155,6 +164,8 @@
 		092C9444222CBF470054DCC5 /* LYJWebView */ = {
 			isa = PBXGroup;
 			children = (
+				09B11D8E22F0284900F7AD59 /* XinyanResource.bundle */,
+				09B11D8D22F0284000F7AD59 /* XYCrawlerSDK.h */,
 				091AF18C226D9A2600463E9D /* HybridNSURLProtocol.h */,
 				091AF18A226D9A2500463E9D /* HybridNSURLProtocol.m */,
 				091AF18B226D9A2600463E9D /* NSURLProtocol+WKWebVIew.h */,
@@ -182,6 +193,7 @@
 		092C9449222CBF470054DCC5 /* framework */ = {
 			isa = PBXGroup;
 			children = (
+				09B11D8B22F0283500F7AD59 /* XYCrawler.a */,
 				09740E8322924C5600C96F37 /* MGFaceIDIDCardKernelKit.framework */,
 				09740E8222924C5500C96F37 /* MGFaceIDIDCardKit.framework */,
 				092C944A222CBF470054DCC5 /* MGFaceIDBaseKit.framework */,
@@ -278,12 +290,14 @@
 				092C9464222E710D0054DCC5 /* scan.html in Resources */,
 				092C9461222E710D0054DCC5 /* back.svg in Resources */,
 				092C9463222E710D0054DCC5 /* share.svg in Resources */,
+				09B11D9122F03C3700F7AD59 /* loginPrivate.html in Resources */,
 				092C9438222946560054DCC5 /* Assets.xcassets in Resources */,
 				09740E8922924C8C00C96F37 /* MGFaceIDIDCardResouce.bundle in Resources */,
 				092C9462222E710D0054DCC5 /* close.svg in Resources */,
 				092C9459222CBF470054DCC5 /* sjmhPBBundle.bundle in Resources */,
 				092C9436222946550054DCC5 /* Main.storyboard in Resources */,
 				092C9452222CBF470054DCC5 /* MGFaceIDLiveCustomDetect.bundle in Resources */,
+				09B11D8F22F0284900F7AD59 /* XinyanResource.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +441,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -486,6 +501,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -511,6 +527,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 447C6XLHSL;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/BMKLocationKit/framework\"",
@@ -563,6 +580,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 447C6XLHSL;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/BMKLocationKit/framework\"",

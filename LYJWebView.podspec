@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
 s.name     = "LYJWebView"
-s.version  = "1.6.0"
+s.version  = "1.6.1"
 s.license  = "MIT"
 s.summary  = "private web view"
 s.homepage = "https://github.com/Liuyujiaodev/LYJWebView.git"
@@ -19,7 +19,7 @@ s.source       = { :git => "https://github.com/Liuyujiaodev/LYJWebView.git", :ta
  s.description = %{LYJWebView }
 s.source_files = "LYJWebView", "LYJWebView/**/*.{h,m}"
 s.vendored_frameworks = "LYJWebView/**/framework/*.framework"
-s.vendored_libraries = "LYJWebView/**/framework/libshujumoheSDK.a"
+s.vendored_libraries = "LYJWebView/**/framework/*.a"
 s.frameworks = "WebKit","CoreMedia","CoreMotion","Social"
 s.requires_arc = true
 s.platform = :ios, '8.0'

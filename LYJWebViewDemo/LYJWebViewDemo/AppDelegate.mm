@@ -9,7 +9,10 @@
 #import "AppDelegate.h"
 #import "ViewController.h"
 #import "JSCacheUtil.h"
+#import "XYCrawlerSDK.h"
 
+#define kXY_USER  @"8150719201"
+#define kXY_KEY   @"6613d600d19941a094753830bd6fc0af"
 @interface AppDelegate ()
 
 @end
@@ -27,6 +30,10 @@
     UINavigationController* vc = [[UINavigationController alloc] initWithRootViewController:webVC];
     self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
+    
+    // 初始化
+    [XYCrawlerSDK xySDKUser:kXY_USER key:kXY_KEY];
+    // 开启SDK日志
     return YES;
 }
 

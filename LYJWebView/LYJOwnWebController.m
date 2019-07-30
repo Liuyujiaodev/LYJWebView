@@ -30,6 +30,7 @@
 #import <AddressBookUI/ABPersonViewController.h>
 #import <Contacts/Contacts.h>
 #import <ContactsUI/ContactsUI.h>
+#import "XYCrawlerSDK.h"
 
 #define kUSER_DEFAULT_SERVICE_CALL  @"service_call"
 
@@ -111,7 +112,8 @@
     [userController addScriptMessageHandler:self name:@"backWebHome"];
     [userController addScriptMessageHandler:self name:@"contactPicker"];
     [userController addScriptMessageHandler:self name:@"openInSafari"];
-    
+    [userController addScriptMessageHandler:self name:@"xyYunYingShang"];
+
     configuration.userContentController = userController;
     
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, APP_STATUS_NAVBAR_HEIGHT, APPWidth, APPHeight - APP_STATUS_NAVBAR_HEIGHT) configuration:configuration];
@@ -121,7 +123,7 @@
     [self.view addSubview:self.webView];
     
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];//需要改回去
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:_url]];//需要改回去
     [self.webView loadRequest:request];
     [self setDefaultParams];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connect) name:@"net-connect" object:nil];
@@ -276,33 +278,33 @@
 #pragma mark - 截取tel标签打电话
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
-    NSURL *URL = navigationAction.request.URL;
-    NSString *scheme = [URL scheme];
-    if ([scheme isEqualToString:@"tel"]) {
-        NSString *resourceSpecifier = [URL resourceSpecifier];
-        NSString *callPhone = [NSString stringWithFormat:@"telprompt://%@", resourceSpecifier];
-        /// 防止iOS 10及其之后，拨打电话系统弹出框延迟出现
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:callPhone]];
-        decisionHandler(WKNavigationActionPolicyCancel);
-        
-        return;
-    }
-    
-    WKNavigationActionPolicy policy =WKNavigationActionPolicyAllow;
-    NSSet *validSchemes = [NSSet setWithArray:@[@"http", @"https"]];
-    if(![validSchemes containsObject:navigationAction.request.URL.scheme]) {
-          [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
-        policy =WKNavigationActionPolicyCancel;
-    } else if ([[navigationAction.request.URL host] isEqualToString:@"itunes.apple.com"] &&[[UIApplication sharedApplication] openURL:navigationAction.request.URL]) {
-        policy =WKNavigationActionPolicyCancel;
-    }
-    if (navigationAction.targetFrame == nil) {
-          [webView loadRequest:navigationAction.request];
-    }
-        decisionHandler(policy);
+//    NSURL *URL = navigationAction.request.URL;
+//    NSString *scheme = [URL scheme];
+//    if ([scheme isEqualToString:@"tel"]) {
+//        NSString *resourceSpecifier = [URL resourceSpecifier];
+//        NSString *callPhone = [NSString stringWithFormat:@"telprompt://%@", resourceSpecifier];
+//        /// 防止iOS 10及其之后，拨打电话系统弹出框延迟出现
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:callPhone]];
+//        decisionHandler(WKNavigationActionPolicyCancel);
+//
+//        return;
+//    }
+//
+//    WKNavigationActionPolicy policy =WKNavigationActionPolicyAllow;
+//    NSSet *validSchemes = [NSSet setWithArray:@[@"http", @"https"]];
+//    if(![validSchemes containsObject:navigationAction.request.URL.scheme]) {
+//          [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+//        policy =WKNavigationActionPolicyCancel;
+//    } else if ([[navigationAction.request.URL host] isEqualToString:@"itunes.apple.com"] &&[[UIApplication sharedApplication] openURL:navigationAction.request.URL]) {
+//        policy =WKNavigationActionPolicyCancel;
+//    }
+//    if (navigationAction.targetFrame == nil) {
+//          [webView loadRequest:navigationAction.request];
+//    }
+//        decisionHandler(policy);
     
      
-    //    decisionHandler(WKNavigationActionPolicyAllow);
+        decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
@@ -451,7 +453,19 @@
         [self contactPicker:message.body];
     } else if ([message.name isEqualToString:@"openInSafari"]) {
         [self openInSafari:message.body];
+    } else if ([message.name isEqualToString:@"xyYunYingShang"]) {
+        [self xyYunYingShang];
     }
+}
+#pragma mark - 新颜运营商
+- (void)xyYunYingShang {
+    [[XYCrawlerSDK sharedSDK] startFunctionOfCarrierWithTaskId:[self getTaskId] mobile:@"" password:@"" idCard:@"" realName:@"" inputEditing:YES showIdNameInput:YES resultCallBack:^(XYCrawlerSDKFunction function, int code, NSString *token, NSString *message) {
+        if (code > 0) {
+            
+        } else {
+            NSLog(@"运营商-认证失败：%@",message);
+        }
+    }];
 }
 
 #pragma mark - web设置左上角的按钮及回调方法
@@ -1639,4 +1653,22 @@
     
     return @"其他";
 }
+
+/**
+ 模拟生成taskId
+ 
+ @return taskId
+ */
+- (NSString *)getTaskId {
+    // 模拟生成transId
+    int num = (arc4random() % 1000000);
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    
+    
+    [formatter setDateFormat:@"YYYY-MM-dd-HH-mm-ss"];
+    NSDate *datenow = [NSDate date];
+    NSString *currentTimeString = [formatter stringFromDate:datenow];
+    return [NSString stringWithFormat:@"iOS%@%.6d",currentTimeString,num];
+}
+
 @end

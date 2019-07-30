@@ -26,6 +26,7 @@
 //        self.yw_baidu_key = [YLCompanySettingUtil getBaiduMap];
         self.yw_face_key = kFACE_API_KEY;
         self.yw_face_secret = kFACE_API_SECRET;
+        self.isNewVersion = NO;
     }
     return self;
 }
